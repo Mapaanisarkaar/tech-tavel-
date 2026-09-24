@@ -101,4 +101,4 @@ app.post('/book', (req, res) => {
   res.json({ status: "SUCCESS", newWallet: agentWallet });
 });
 
-app.listen(8080, () => console.log("NEW PORT SERVER RUNNING AT 8080"));
+process.env.PORT || 8080() => console.log("NEW PORT SERVER RUNNING AT 8080"))
