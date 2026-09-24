@@ -6,7 +6,7 @@ app.use(express.json());
 let agentWallet = 45500;
 let adminMarkup = 500;
 
-// Indian Cities & Airports Database (80+ All Major Indian Cities)
+// Indian Cities & Airports Database
 const CITIES = [
     { name: "Agartala", code: "IXA" },
     { name: "Agra", code: "AGR" },
@@ -111,17 +111,18 @@ app.get('/', (req, res) => {
         body { font-family: Arial, sans-serif; padding: 20px; background: #eef2f5; }
         .card { background: white; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .wallet { background: #0056b3; color: white; border-radius: 8px; padding: 10px; margin-bottom: 15px; }
-        .tab-btn { width: 48%; padding: 10px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .tab-btn { width: 31%; padding: 10px 5px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; }
         .tab-btn.active { background: #007bff; font-weight: bold; }
         .form-group { margin-bottom: 10px; text-align: left; position: relative; }
         label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 3px; }
         input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
         button.action-btn { background: #28a745; color: white; font-weight: bold; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; }
+        .admin-box { background: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 8px; text-align: left; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2>Agent Travel Dashboard</h2>
+        <h2>B2B Travel Portal</h2>
         <div class="wallet">
             Wallet Balance: <b>₹<span id="bal">${agentWallet}</span></b>
         </div>
@@ -129,9 +130,10 @@ app.get('/', (req, res) => {
         <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
             <button class="tab-btn active" id="flightTab" onclick="switchTab('flight')">Flights</button>
             <button class="tab-btn" id="hotelTab" onclick="switchTab('hotel')">Hotels</button>
+            <button class="tab-btn" id="adminTab" style="background:#dc3545;" onclick="switchTab('admin')">Admin Panel</button>
         </div>
 
-        <!-- Datalist for All Indian Cities Auto-complete Suggestions -->
+        <!-- Datalist for City Suggestions -->
         <datalist id="cityList">
             ${CITIES.map(c => `<option value="${c.name} (${c.code})">`).join('')}
         </datalist>
@@ -185,21 +187,48 @@ app.get('/', (req, res) => {
             <button class="action-btn" style="background:#17a2b8;" onclick="searchHotels()">Search Hotels</button>
         </div>
 
+        <!-- ADMIN PANEL FORM -->
+        <div id="adminSection" style="display:none;">
+            <div class="admin-box">
+                <h3 style="margin-top:0;">Admin Control Panel</h3>
+                <div class="form-group">
+                    <label>Set Agent Wallet Balance (₹)</label>
+                    <input type="number" id="newWalletVal" value="${agentWallet}">
+                </div>
+                <button class="action-btn" style="background:#007bff;" onclick="updateWallet()">Update Wallet Balance</button>
+                
+                <hr style="margin: 15px 0;">
+                
+                <div class="form-group">
+                    <label>Set Admin Markup Per Booking (₹)</label>
+                    <input type="number" id="newMarkupVal" value="${adminMarkup}">
+                </div>
+                <button class="action-btn" style="background:#ffc107; color:black;" onclick="updateMarkup()">Update Markup</button>
+            </div>
+        </div>
+
         <div id="results" style="margin-top:20px;"></div>
     </div>
 
     <script>
         function switchTab(type) {
+            document.getElementById('flightSection').style.display = 'none';
+            document.getElementById('hotelSection').style.display = 'none';
+            document.getElementById('adminSection').style.display = 'none';
+
+            document.getElementById('flightTab').classList.remove('active');
+            document.getElementById('hotelTab').classList.remove('active');
+            document.getElementById('adminTab').classList.remove('active');
+
             if(type === 'flight') {
                 document.getElementById('flightSection').style.display = 'block';
-                document.getElementById('hotelSection').style.display = 'none';
                 document.getElementById('flightTab').classList.add('active');
-                document.getElementById('hotelTab').classList.remove('active');
-            } else {
-                document.getElementById('flightSection').style.display = 'none';
+            } else if(type === 'hotel') {
                 document.getElementById('hotelSection').style.display = 'block';
                 document.getElementById('hotelTab').classList.add('active');
-                document.getElementById('flightTab').classList.remove('active');
+            } else {
+                document.getElementById('adminSection').style.display = 'block';
+                document.getElementById('adminTab').classList.add('active');
             }
             document.getElementById('results').innerHTML = '';
         }
@@ -262,6 +291,33 @@ app.get('/', (req, res) => {
                 alert(data.msg);
             }
         }
+
+        async function updateWallet() {
+            let amount = document.getElementById('newWalletVal').value;
+            let res = await fetch('/admin/update-wallet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: Number(amount) })
+            });
+            let data = await res.json();
+            if(data.status === "SUCCESS") {
+                document.getElementById('bal').innerText = data.newWallet;
+                alert("Wallet Balance Updated to ₹" + data.newWallet);
+            }
+        }
+
+        async function updateMarkup() {
+            let markup = document.getElementById('newMarkupVal').value;
+            let res = await fetch('/admin/update-markup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ markup: Number(markup) })
+            });
+            let data = await res.json();
+            if(data.status === "SUCCESS") {
+                alert("Markup updated to ₹" + data.newMarkup);
+            }
+        }
     </script>
 </body>
 </html>
@@ -292,6 +348,16 @@ app.post('/book', (req, res) => {
     }
     agentWallet -= fare;
     res.json({ status: "SUCCESS", newWallet: agentWallet });
+});
+
+app.post('/admin/update-wallet', (req, res) => {
+    agentWallet = req.body.amount;
+    res.json({ status: "SUCCESS", newWallet: agentWallet });
+});
+
+app.post('/admin/update-markup', (req, res) => {
+    adminMarkup = req.body.markup;
+    res.json({ status: "SUCCESS", newMarkup: adminMarkup });
 });
 
 const PORT = process.env.PORT || 8080;
