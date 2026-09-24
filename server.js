@@ -22,13 +22,13 @@ app.get('/', (req, res) => {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MakeMyTrip B2B Portal</title>
+    <title>Tech Travel B2B Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: #e6eded; margin: 0; padding: 0; }
-        .mmt-header { background: linear-gradient(to right, #051329, #102d5e); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-align: center; }
+        .mmt-header { background: linear-gradient(to right, #051329, #102d5e); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 22px; font-weight: 800; color: #ff6d00; text-transform: uppercase; }
         .logo span { color: #ffffff; }
         .wallet-badge { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; }
@@ -50,7 +50,7 @@ app.get('/', (req, res) => {
 <body>
 
     <div class="mmt-header">
-        <div class="logo">MakeMy<span>Trip</span> <small style="font-size:10px; color:#ff6d00;">B2B</small></div>
+        <div class="logo">Tech <span>Travel</span> <small style="font-size:10px; color:#ff6d00;">B2B</small></div>
         <div class="wallet-badge">Wallet Balance: <span class="wallet-amount">₹<span id="bal">${agentWallet}</span></span></div>
     </div>
 
@@ -187,7 +187,7 @@ app.post('/book', (req, res) => {
     const { fare, type, title } = req.body;
     if (agentWallet < fare) return res.json({ status: "FAIL", msg: "Insufficient Wallet Balance!" });
     agentWallet -= fare;
-    const pnr = "MMT" + Math.floor(100000 + Math.random() * 900000);
+    const pnr = "TT" + Math.floor(100000 + Math.random() * 900000);
     const bookingDate = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
     bookingsHistory.unshift({ pnr, type, title, fare, date: bookingDate });
     res.json({ status: "SUCCESS", newWallet: agentWallet, pnr });
