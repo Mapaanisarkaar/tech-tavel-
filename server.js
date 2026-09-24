@@ -5,6 +5,7 @@ app.use(express.json());
 
 let agentWallet = 45500;
 let adminMarkup = 500;
+let bookingsHistory = [];
 
 // Indian Cities & Airports Database
 const CITIES = [
@@ -108,16 +109,23 @@ app.get('/', (req, res) => {
     <title>B2B Travel Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background: #eef2f5; }
-        .card { background: white; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .wallet { background: #0056b3; color: white; border-radius: 8px; padding: 10px; margin-bottom: 15px; }
-        .tab-btn { width: 31%; padding: 10px 5px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; }
-        .tab-btn.active { background: #007bff; font-weight: bold; }
+        body { font-family: Arial, sans-serif; padding: 15px; background: #eef2f5; margin: 0; }
+        .card { background: white; padding: 20px; border-radius: 10px; max-width: 550px; margin: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .wallet { background: #0056b3; color: white; border-radius: 8px; padding: 10px; margin-bottom: 15px; text-align: center; }
+        .nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 15px; }
+        .tab-btn { padding: 8px 2px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 11px; font-weight: bold; }
+        .tab-btn.active { background: #007bff; }
         .form-group { margin-bottom: 10px; text-align: left; position: relative; }
         label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 3px; }
         input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
         button.action-btn { background: #28a745; color: white; font-weight: bold; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; }
         .admin-box { background: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 8px; text-align: left; }
+        .ticket-card { border: 1px dashed #007bff; padding: 10px; border-radius: 5px; background: #f8f9fa; margin-bottom: 10px; text-align: left; font-size: 13px; }
+        @media print {
+            body * { visibility: hidden; }
+            #printableTicket, #printableTicket * { visibility: visible; }
+            #printableTicket { position: absolute; left: 0; top: 0; width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -127,10 +135,11 @@ app.get('/', (req, res) => {
             Wallet Balance: <b>₹<span id="bal">${agentWallet}</span></b>
         </div>
 
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+        <div class="nav-grid">
             <button class="tab-btn active" id="flightTab" onclick="switchTab('flight')">Flights</button>
             <button class="tab-btn" id="hotelTab" onclick="switchTab('hotel')">Hotels</button>
-            <button class="tab-btn" id="adminTab" style="background:#dc3545;" onclick="switchTab('admin')">Admin Panel</button>
+            <button class="tab-btn" id="historyTab" style="background:#17a2b8;" onclick="switchTab('history')">PNR History</button>
+            <button class="tab-btn" id="adminTab" style="background:#dc3545;" onclick="switchTab('admin')">Admin</button>
         </div>
 
         <!-- Datalist for City Suggestions -->
@@ -187,6 +196,12 @@ app.get('/', (req, res) => {
             <button class="action-btn" style="background:#17a2b8;" onclick="searchHotels()">Search Hotels</button>
         </div>
 
+        <!-- HISTORY / PNR SECTION -->
+        <div id="historySection" style="display:none;">
+            <h3>Booking History & PNR Tickets</h3>
+            <div id="historyList">Loading history...</div>
+        </div>
+
         <!-- ADMIN PANEL FORM -->
         <div id="adminSection" style="display:none;">
             <div class="admin-box">
@@ -210,14 +225,19 @@ app.get('/', (req, res) => {
         <div id="results" style="margin-top:20px;"></div>
     </div>
 
+    <!-- Hidden Printable Area for Ticket PDF -->
+    <div id="printableTicket" style="display:none;"></div>
+
     <script>
         function switchTab(type) {
             document.getElementById('flightSection').style.display = 'none';
             document.getElementById('hotelSection').style.display = 'none';
+            document.getElementById('historySection').style.display = 'none';
             document.getElementById('adminSection').style.display = 'none';
 
             document.getElementById('flightTab').classList.remove('active');
             document.getElementById('hotelTab').classList.remove('active');
+            document.getElementById('historyTab').classList.remove('active');
             document.getElementById('adminTab').classList.remove('active');
 
             if(type === 'flight') {
@@ -226,6 +246,10 @@ app.get('/', (req, res) => {
             } else if(type === 'hotel') {
                 document.getElementById('hotelSection').style.display = 'block';
                 document.getElementById('hotelTab').classList.add('active');
+            } else if(type === 'history') {
+                document.getElementById('historySection').style.display = 'block';
+                document.getElementById('historyTab').classList.add('active');
+                loadHistory();
             } else {
                 document.getElementById('adminSection').style.display = 'block';
                 document.getElementById('adminTab').classList.add('active');
@@ -250,7 +274,7 @@ app.get('/', (req, res) => {
                 html += \`<div style="border-bottom:1px solid #ccc; padding:10px 0; text-align:left;">
                 <b>\${f.airline} (\${f.flightNo})</b> - \${f.time}<br>
                 Price (\${pax} Pax): <b>₹\${f.displayPrice * pax}</b>
-                <button style="width:auto; padding:5px 10px; margin-top:5px;" onclick="bookItem(\${f.displayPrice * pax}, 'Flight')">Book Flight</button>
+                <button style="width:auto; padding:5px 10px; margin-top:5px;" onclick="bookItem(\${f.displayPrice * pax}, 'Flight', '\${f.airline} \${f.flightNo} (\${from} to \${to})')">Book Flight</button>
                 </div>\`;
             });
             document.getElementById('results').innerHTML = html;
@@ -270,26 +294,67 @@ app.get('/', (req, res) => {
                 html += \`<div style="border-bottom:1px solid #ccc; padding:10px 0; text-align:left;">
                 <b>\${h.name}</b> - \${h.rating}<br>
                 Price/Night: <b>₹\${h.displayPrice}</b>
-                <button style="width:auto; padding:5px 10px; margin-top:5px; background:#17a2b8; color:white; border:none; border-radius:3px;" onclick="bookItem(\${h.displayPrice}, 'Hotel')">Book Hotel</button>
+                <button style="width:auto; padding:5px 10px; margin-top:5px; background:#17a2b8; color:white; border:none; border-radius:3px;" onclick="bookItem(\${h.displayPrice}, 'Hotel', '\${h.name} (\${city})')">Book Hotel</button>
                 </div>\`;
             });
             document.getElementById('results').innerHTML = html;
         }
 
-        async function bookItem(fare, type) {
+        async function bookItem(fare, type, title) {
             let res = await fetch('/book', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ fare, type })
+                body: JSON.stringify({ fare, type, title })
             });
             let data = await res.json();
             if(data.status === "SUCCESS") {
-                alert(type + " Booked Successfully!");
+                alert(type + " Booked! PNR Generated: " + data.pnr);
                 document.getElementById('bal').innerText = data.newWallet;
-                document.getElementById('results').innerHTML = "<p style='color:green;'><b>" + type + " Booking Done! Remaining Wallet: ₹" + data.newWallet + "</b></p>";
+                document.getElementById('results').innerHTML = "<p style='color:green;'><b>" + type + " Booking Confirmed!<br>PNR: " + data.pnr + "<br>Wallet Balance: ₹" + data.newWallet + "</b></p>";
             } else {
                 alert(data.msg);
             }
+        }
+
+        async function loadHistory() {
+            let res = await fetch('/history');
+            let data = await res.json();
+            if(data.bookings.length === 0) {
+                document.getElementById('historyList').innerHTML = "<p>No bookings found.</p>";
+                return;
+            }
+            let html = '';
+            data.bookings.forEach(b => {
+                html += \`<div class="ticket-card">
+                <b>Type:</b> \${b.type} | <b>PNR:</b> <span style="color:#007bff; font-weight:bold;">\${b.pnr}</span><br>
+                <b>Item:</b> \${b.title}<br>
+                <b>Amount Paid:</b> ₹\${b.fare} | <b>Date:</b> \${b.date}<br>
+                <button style="margin-top:5px; padding:3px 8px; background:#28a745; color:white; border:none; border-radius:3px; cursor:pointer;" onclick="printTicket('\${b.pnr}', '\${b.type}', '\${b.title}', \${b.fare}, '\${b.date}')">Print / Save Ticket PDF</button>
+                </div>\`;
+            });
+            document.getElementById('historyList').innerHTML = html;
+        }
+
+        function printTicket(pnr, type, title, fare, date) {
+            let ticketHtml = \`
+                <div style="padding: 20px; border: 2px solid #333; font-family: Arial; max-width:600px; margin:auto;">
+                    <h2 style="text-align:center; color:#0056b3;">B2B TRAVEL E-TICKET RECEIPT</h2>
+                    <hr>
+                    <p><b>PNR / Booking Ref:</b> \${pnr}</p>
+                    <p><b>Booking Type:</b> \${type}</p>
+                    <p><b>Details:</b> \${title}</p>
+                    <p><b>Total Amount Paid:</b> ₹\${fare}</p>
+                    <p><b>Booking Date & Time:</b> \${date}</p>
+                    <p><b>Status:</b> CONFIRMED</p>
+                    <hr>
+                    <p style="text-align:center; font-size:12px; color:#666;">Thank you for booking with B2B Travel Portal!</p>
+                </div>
+            \`;
+            let printArea = document.getElementById('printableTicket');
+            printArea.innerHTML = ticketHtml;
+            printArea.style.display = 'block';
+            window.print();
+            printArea.style.display = 'none';
         }
 
         async function updateWallet() {
@@ -342,12 +407,21 @@ app.post('/search-hotels', (req, res) => {
 });
 
 app.post('/book', (req, res) => {
-    const fare = req.body.fare;
+    const { fare, type, title } = req.body;
     if (agentWallet < fare) {
         return res.json({ status: "FAIL", msg: "Insufficient Balance in Wallet!" });
     }
+    
     agentWallet -= fare;
-    res.json({ status: "SUCCESS", newWallet: agentWallet });
+    const pnr = "PNR" + Math.floor(100000 + Math.random() * 900000);
+    const bookingDate = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+    
+    bookingsHistory.unshift({ pnr, type, title, fare, date: bookingDate });
+    res.json({ status: "SUCCESS", newWallet: agentWallet, pnr });
+});
+
+app.get('/history', (req, res) => {
+    res.json({ bookings: bookingsHistory });
 });
 
 app.post('/admin/update-wallet', (req, res) => {
