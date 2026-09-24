@@ -19,6 +19,9 @@ app.get('/', (req, res) => {
         .wallet { background: #0056b3; color: white; border-radius: 8px; padding: 10px; margin-bottom: 15px; }
         .tab-btn { width: 48%; padding: 10px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; }
         .tab-btn.active { background: #007bff; font-weight: bold; }
+        .form-group { margin-bottom: 10px; text-align: left; }
+        label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 3px; }
+        input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
         button.action-btn { background: #28a745; color: white; font-weight: bold; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; }
     </style>
 </head>
@@ -34,11 +37,52 @@ app.get('/', (req, res) => {
             <button class="tab-btn" id="hotelTab" onclick="switchTab('hotel')">Hotels</button>
         </div>
 
+        <!-- FLIGHT FORM -->
         <div id="flightSection">
+            <div class="form-group">
+                <label>From City</label>
+                <input type="text" id="fFrom" value="DEL">
+            </div>
+            <div class="form-group">
+                <label>To City</label>
+                <input type="text" id="fTo" value="BOM">
+            </div>
+            <div class="form-group">
+                <label>Travel Date</label>
+                <input type="date" id="fDate" value="2026-10-01">
+            </div>
+            <div class="form-group">
+                <label>Passengers</label>
+                <select id="fPax">
+                    <option value="1">1 Passenger</option>
+                    <option value="2">2 Passengers</option>
+                    <option value="3">3 Passengers</option>
+                </select>
+            </div>
             <button class="action-btn" onclick="searchFlights()">Search Flights</button>
         </div>
 
+        <!-- HOTEL FORM -->
         <div id="hotelSection" style="display:none;">
+            <div class="form-group">
+                <label>City / Location</label>
+                <input type="text" id="hCity" value="Mumbai">
+            </div>
+            <div class="form-group">
+                <label>Check-In Date</label>
+                <input type="date" id="hCheckIn" value="2026-10-01">
+            </div>
+            <div class="form-group">
+                <label>Check-Out Date</label>
+                <input type="date" id="hCheckOut" value="2026-10-03">
+            </div>
+            <div class="form-group">
+                <label>Guests / Rooms</label>
+                <select id="hGuests">
+                    <option value="1 Room, 2 Guests">1 Room, 2 Guests</option>
+                    <option value="2 Rooms, 4 Guests">2 Rooms, 4 Guests</option>
+                </select>
+            </div>
             <button class="action-btn" style="background:#17a2b8;" onclick="searchHotels()">Search Hotels</button>
         </div>
 
@@ -62,28 +106,44 @@ app.get('/', (req, res) => {
         }
 
         async function searchFlights() {
-            let res = await fetch('/search-flights', { method: 'POST' });
+            let from = document.getElementById('fFrom').value;
+            let to = document.getElementById('fTo').value;
+            let date = document.getElementById('fDate').value;
+            let pax = document.getElementById('fPax').value;
+
+            let res = await fetch('/search-flights', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ from, to, date, pax })
+            });
             let data = await res.json();
-            let html = '<h3>Available Flights</h3>';
+            let html = '<h3>Flights: ' + from + ' -> ' + to + ' (' + date + ')</h3>';
             data.flights.forEach(f => {
-                html += \`<div style="border-bottom:1px solid #ccc; padding:10px 0;">
+                html += \`<div style="border-bottom:1px solid #ccc; padding:10px 0; text-align:left;">
                 <b>\${f.airline} (\${f.flightNo})</b> - \${f.time}<br>
-                Price: <b>₹\${f.displayPrice}</b>
-                <button style="width:auto; padding:5px 10px; margin-left:10px;" onclick="bookItem(\${f.displayPrice}, 'Flight')">Book Flight</button>
+                Price (\${pax} Pax): <b>₹\${f.displayPrice * pax}</b>
+                <button style="width:auto; padding:5px 10px; margin-top:5px;" onclick="bookItem(\${f.displayPrice * pax}, 'Flight')">Book Flight</button>
                 </div>\`;
             });
             document.getElementById('results').innerHTML = html;
         }
 
         async function searchHotels() {
-            let res = await fetch('/search-hotels', { method: 'POST' });
+            let city = document.getElementById('hCity').value;
+            let checkIn = document.getElementById('hCheckIn').value;
+
+            let res = await fetch('/search-hotels', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ city })
+            });
             let data = await res.json();
-            let html = '<h3>Available Hotels</h3>';
+            let html = '<h3>Hotels in ' + city + '</h3>';
             data.hotels.forEach(h => {
-                html += \`<div style="border-bottom:1px solid #ccc; padding:10px 0;">
-                <b>\${h.name}</b> (\${h.location}) - \${h.rating}<br>
+                html += \`<div style="border-bottom:1px solid #ccc; padding:10px 0; text-align:left;">
+                <b>\${h.name}</b> - \${h.rating}<br>
                 Price/Night: <b>₹\${h.displayPrice}</b>
-                <button style="width:auto; padding:5px 10px; margin-left:10px; background:#17a2b8; color:white; border:none; border-radius:3px;" onclick="bookItem(\${h.displayPrice}, 'Hotel')">Book Hotel</button>
+                <button style="width:auto; padding:5px 10px; margin-top:5px; background:#17a2b8; color:white; border:none; border-radius:3px;" onclick="bookItem(\${h.displayPrice}, 'Hotel')">Book Hotel</button>
                 </div>\`;
             });
             document.getElementById('results').innerHTML = html;
@@ -119,9 +179,10 @@ app.post('/search-flights', (req, res) => {
 });
 
 app.post('/search-hotels', (req, res) => {
+    const city = req.body.city || "Mumbai";
     const hotels = [
-        { name: "Taj Mahal Palace", location: "Mumbai", rating: "5 Star", displayPrice: 8000 + adminMarkup },
-        { name: "Radisson Blu", location: "Delhi", rating: "4 Star", displayPrice: 4500 + adminMarkup }
+        { name: "Grand Hotel " + city, rating: "5 Star", displayPrice: 8000 + adminMarkup },
+        { name: "Comfort Stay " + city, rating: "4 Star", displayPrice: 4500 + adminMarkup }
     ];
     res.json({ hotels });
 });
