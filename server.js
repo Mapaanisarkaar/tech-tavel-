@@ -11,7 +11,6 @@ const razorpay = new Razorpay({
 
 let bookingsHistory = [];
 
-// Advanced Hotel Database with Tax & Contact details
 let dynamicHotels = [
     { 
         id: "H101",
@@ -39,41 +38,32 @@ app.get('/', (req, res) => {
     <style>
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
         body { background: #eef2f5; color: #333; }
-
         .header { background: #ffffff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 22px; font-weight: 900; color: #000; text-transform: lowercase; letter-spacing: -1px; }
         .logo span { background: #e53935; color: #fff; padding: 2px 6px; border-radius: 6px; font-weight: 800; margin: 0 2px; }
         .top-nav-right { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 600; }
         .btn-login { background: linear-gradient(90deg, #008cff, #0052cc); color: white; border: none; padding: 6px 14px; border-radius: 20px; font-weight: 700; cursor: pointer; }
         .btn-add-hotel { background: #28a745; color: white; border: none; padding: 6px 12px; border-radius: 20px; font-weight: 700; cursor: pointer; }
-
         .services-bar { background: #ffffff; padding: 12px 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px; }
         .services-list { display: flex; justify-content: center; gap: 15px; list-style: none; overflow-x: auto; padding: 0 10px; }
         .service-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: #4a5568; font-weight: 600; font-size: 11px; padding: 4px 8px; border-bottom: 3px solid transparent; white-space: nowrap; }
         .service-item.active { color: #008cff; border-bottom-color: #008cff; font-weight: 700; }
-
         .container { max-width: 1100px; margin: 0 auto; padding: 0 15px; }
-
         .search-card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.06); margin-bottom: 25px; border: 1px solid #e2e8f0; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
         .form-group { background: #f8fafc; padding: 10px 14px; border-radius: 12px; border: 1px solid #e2e8f0; }
         .form-group label { display: block; font-size: 10px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 2px; }
         .form-group input, .form-group select { width: 100%; border: none; background: transparent; font-size: 14px; font-weight: 700; color: #0f172a; outline: none; }
-        
         .search-btn { background: linear-gradient(90deg, #008cff, #0052cc); color: white; font-weight: 800; font-size: 15px; border: none; padding: 12px; border-radius: 35px; cursor: pointer; width: 100%; max-width: 240px; margin: 0 auto; display: block; text-transform: uppercase; }
-
         .hotel-card { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .book-btn { background: #28a745; color: white; border: none; padding: 8px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 13px; }
-
         .partner-box { background: #f0f9ff; border: 2px solid #008cff; padding: 20px; border-radius: 16px; margin-bottom: 20px; }
         .partner-box h3 { color: #008cff; font-size: 18px; margin-bottom: 5px; }
         .partner-box p { font-size: 12px; color: #475569; margin-bottom: 15px; }
-        
         .tax-tag { font-size: 10px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: 600; margin-top: 4px; display: inline-block; }
     </style>
 </head>
 <body>
-
     <div class="header">
         <div class="logo">tech <span>my</span> trip</div>
         <div class="top-nav-right">
@@ -92,8 +82,6 @@ app.get('/', (req, res) => {
 
     <div class="container">
         <div class="search-card">
-            
-            <!-- Hotel Search View -->
             <div id="hotelSection">
                 <div class="form-grid">
                     <div class="form-group"><label>City / Location</label><input type="text" id="hCity" value="Jamnagar"></div>
@@ -101,41 +89,18 @@ app.get('/', (req, res) => {
                 <button class="search-btn" style="background: linear-gradient(90deg, #ff7e00, #ff5100);" onclick="searchHotels()">SEARCH HOTELS</button>
             </div>
 
-            <!-- Dedicated Hotel Partner Portal -->
             <div id="partnerSection" style="display:none;">
                 <div class="partner-box">
                     <h3>🏨 Hotel Partner Registration & Tax Details</h3>
                     <p>Apni hotel list karein. Booking message directly aapke Email aur WhatsApp par instant bhej diya jayega.</p>
-                    
                     <div class="form-grid">
-                        <div class="form-group">
-                            <label>Hotel Name</label>
-                            <input type="text" id="pName" placeholder="e.g. Royal Palace Hotel">
-                        </div>
-                        <div class="form-group">
-                            <label>City</label>
-                            <input type="text" id="pCity" placeholder="e.g. Jamnagar">
-                        </div>
-                        <div class="form-group">
-                            <label>Price Per Night (₹)</label>
-                            <input type="number" id="pPrice" placeholder="e.g. 3500">
-                        </div>
-                        <div class="form-group">
-                            <label>GSTIN Number</label>
-                            <input type="text" id="pGstin" placeholder="e.g. 24ABCDE1234F1Z5">
-                        </div>
-                        <div class="form-group">
-                            <label>TDS Rate (%)</label>
-                            <input type="number" id="pTds" value="2">
-                        </div>
-                        <div class="form-group">
-                            <label>Notification WhatsApp Number</label>
-                            <input type="text" id="pWhatsapp" placeholder="e.g. 919876543210">
-                        </div>
-                        <div class="form-group">
-                            <label>Notification Email ID</label>
-                            <input type="email" id="pEmail" placeholder="hotelbooking@gmail.com">
-                        </div>
+                        <div class="form-group"><label>Hotel Name</label><input type="text" id="pName" placeholder="e.g. Royal Palace Hotel"></div>
+                        <div class="form-group"><label>City</label><input type="text" id="pCity" placeholder="e.g. Jamnagar"></div>
+                        <div class="form-group"><label>Price Per Night (₹)</label><input type="number" id="pPrice" placeholder="e.g. 3500"></div>
+                        <div class="form-group"><label>GSTIN Number</label><input type="text" id="pGstin" placeholder="e.g. 24ABCDE1234F1Z5"></div>
+                        <div class="form-group"><label>TDS Rate (%)</label><input type="number" id="pTds" value="2"></div>
+                        <div class="form-group"><label>Notification WhatsApp Number</label><input type="text" id="pWhatsapp" placeholder="e.g. 919876543210"></div>
+                        <div class="form-group"><label>Notification Email ID</label><input type="email" id="pEmail" placeholder="hotelbooking@gmail.com"></div>
                         <div class="form-group">
                             <label>Rating Category</label>
                             <select id="pRating">
@@ -149,7 +114,6 @@ app.get('/', (req, res) => {
                 </div>
             </div>
 
-            <!-- Booking History -->
             <div id="historySection" style="display:none;">
                 <h3 style="margin-bottom:12px; color:#0f172a;">Your Bookings & Tax Receipts</h3>
                 <div id="historyList">Loading...</div>
@@ -183,7 +147,7 @@ app.get('/', (req, res) => {
             let rating = document.getElementById('pRating').value;
 
             if(!name || !city || !displayPrice || !whatsapp || !email) {
-                return alert("Kripya saari jaroori details (Name, City, Price, WhatsApp, Email) bharein!");
+                return alert("Kripya saari details bharein!");
             }
 
             let res = await fetch('/add-hotel-partner', {
@@ -194,7 +158,7 @@ app.get('/', (req, res) => {
 
             let data = await res.json();
             if(data.status === "SUCCESS") {
-                alert("Mubarak ho! Aapki Hotel Tax details ke sath registered ho chuki hai.");
+                alert("Hotel successfully register ho gayi hai!");
                 document.getElementById('hCity').value = city;
                 switchTab('hotel');
             }
@@ -206,21 +170,21 @@ app.get('/', (req, res) => {
             let data = await res.json();
             let html = '';
             if(data.hotels.length === 0) {
-                html = "<p style='color:#64748b; text-align:center;'>Is city mein abhi koi hotel nahi hai. 'Hotel Partner Page' par ja kar add karein.</p>";
+                html = "<p style='color:#64748b; text-align:center;'>Is city mein koi hotel nahi hai.</p>";
             } else {
                 data.hotels.forEach(h => {
                     let gstAmount = Math.round(h.displayPrice * 0.18);
-                    html += `<div class="hotel-card">
-                        <div>
-                            <b style="font-size:15px;">${h.name}</b>
-                            <div style="color:#22c55e; font-size:11px; font-weight:700;">★ ${h.rating} \vert{}${h.city}</div>
-                            <div class="tax-tag">GSTIN: ${h.gstin \vert{}\vert{} 'N/A'} \vert{} GST (18\%): ₹${gstAmount}</div>
-                        </div>
-                        <div>
-                            <span style="font-size:18px; font-weight:800; color:#0f172a; margin-right:10px;">₹${h.displayPrice}</span>
-                            <button class="book-btn" onclick="payHotel('${h.id}', ${h.displayPrice}, '${h.name}')">BOOK NOW</button>
-                        </div>
-                    </div>`;
+                    html += '<div class="hotel-card">' +
+                        '<div>' +
+                            '<b style="font-size:15px;">' + h.name + '</b>' +
+                            '<div style="color:#22c55e; font-size:11px; font-weight:700;">★ ' + h.rating + ' | ' + h.city + '</div>' +
+                            '<div class="tax-tag">GSTIN: ' + (h.gstin || 'N/A') + ' | GST (18%): ₹' + gstAmount + '</div>' +
+                        '</div>' +
+                        '<div>' +
+                            '<span style="font-size:18px; font-weight:800; color:#0f172a; margin-right:10px;">₹' + h.displayPrice + '</span>' +
+                            '<button class="book-btn" onclick="payHotel(\'' + h.id + '\', ' + h.displayPrice + ', \'' + h.name + '\')">BOOK NOW</button>' +
+                        '</div>' +
+                    '</div>';
                 });
             }
             document.getElementById('results').innerHTML = html;
@@ -249,7 +213,7 @@ app.get('/', (req, res) => {
                     });
                     let verifyData = await verifyRes.json();
                     if(verifyData.status === "SUCCESS") {
-                        alert("Booking Successful! PNR: " + verifyData.pnr + "\\nWhatsApp aur Email Notification bhej diya gaya hai!");
+                        alert("Booking Successful! PNR: " + verifyData.pnr);
                         if(verifyData.waUrl) {
                             window.open(verifyData.waUrl, '_blank');
                         }
@@ -270,10 +234,10 @@ app.get('/', (req, res) => {
             }
             let html = '';
             data.bookings.forEach(b => {
-                html += `<div style="padding:12px; border:1px solid #e2e8f0; margin-bottom:8px; border-radius:10px; background:#f8fafc;">
-                    <b>${b.pnr}</b> \vert{}${b.title} | <b>Total: ₹${b.fare}</b> (Incl. GST: ₹${b.gst})
-                    <div style="font-size:11px; color:#64748b; margin-top:3px;">GSTIN: ${b.gstin} | TDS Deducted (${b.tdsRate}\%): ₹${b.tdsAmount}</div>
-                </div>`;
+                html += '<div style="padding:12px; border:1px solid #e2e8f0; margin-bottom:8px; border-radius:10px; background:#f8fafc;">' +
+                    '<b>' + b.pnr + '</b> | ' + b.title + ' | <b>Total: ₹' + b.fare + '</b> (GST: ₹' + b.gst + ')' +
+                    '<div style="font-size:11px; color:#64748b; margin-top:3px;">GSTIN: ' + b.gstin + ' | TDS Deducted (' + b.tdsRate + '%): ₹' + b.tdsAmount + '</div>' +
+                '</div>';
             });
             document.getElementById('historyList').innerHTML = html;
         }
@@ -285,9 +249,7 @@ app.get('/', (req, res) => {
 
 app.post('/search-hotels', (req, res) => {
     const city = (req.body.city || "").toLowerCase().trim();
-    if (!city) {
-        return res.json({ hotels: dynamicHotels });
-    }
+    if (!city) return res.json({ hotels: dynamicHotels });
     const filtered = dynamicHotels.filter(h => h.city.toLowerCase().includes(city));
     res.json({ hotels: filtered.length > 0 ? filtered : dynamicHotels });
 });
@@ -322,27 +284,15 @@ app.post('/create-order', async (req, res) => {
 app.post('/verify-booking', (req, res) => {
     const { hotelId, amount, type, title } = req.body;
     const pnr = "TT" + Math.floor(100000 + Math.random() * 900000);
-    
-    // Find hotel partner details
     const hotel = dynamicHotels.find(h => h.id === hotelId) || dynamicHotels[0];
-    
     const gst = Math.round(amount * 0.18);
     const tdsAmount = Math.round(amount * ((hotel.tdsPercent || 2) / 100));
 
-    // Instant WhatsApp Notification Direct Link
-    const waMessage = encodeURIComponent(`*NEW BOOKING CONFIRMED!* 🎉\nPNR: ${pnr}\nHotel: ${title}\nAmount: ₹${amount}\nGST (18%): ₹${gst}\nGSTIN: ${hotel.gstin}\n\nInvoice sent to: ${hotel.email}`);
+    const waMessage = encodeURIComponent(`*NEW BOOKING CONFIRMED!*\nPNR: ${pnr}\nHotel: ${title}\nAmount: ₹${amount}\nGST (18%): ₹${gst}\nGSTIN: ${hotel.gstin}`);
     const waUrl = `https://api.whatsapp.com/send?phone=${hotel.whatsapp}&text=${waMessage}`;
 
     bookingsHistory.unshift({ 
-        pnr, 
-        type, 
-        title, 
-        fare: amount, 
-        gst,
-        gstin: hotel.gstin,
-        tdsRate: hotel.tdsPercent || 2,
-        tdsAmount,
-        date: new Date().toLocaleString() 
+        pnr, type, title, fare: amount, gst, gstin: hotel.gstin, tdsRate: hotel.tdsPercent || 2, tdsAmount, date: new Date().toLocaleString() 
     });
 
     res.json({ status: "SUCCESS", pnr, waUrl });
