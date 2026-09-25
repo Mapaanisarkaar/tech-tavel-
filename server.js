@@ -4,7 +4,6 @@ const app = express();
 
 app.use(express.json());
 
-// Razorpay Instance (Aapki Test Keys)
 const razorpay = new Razorpay({
     key_id: 'rzp_test_Tg6Hmgg1bYKgGQ',
     key_secret: 'PkIVv6VqzJ0BEqLwpwDysOMR'
@@ -17,11 +16,17 @@ let bookingsHistory = [];
 app.get('/', (req, res) => {
   res.send(`
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <title>Tech Travel B2B Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Tech Travel - Best B2B Travel Portal | Flights & Hotels Booking</title>
+    <meta name="description" content="Tech Travel is the best B2B travel agency portal for instant flight and hotel bookings with exclusive agent markup.">
+    <meta name="keywords" content="Tech Travel, Tech Travel B2B, Tech Travel Portal, Flight Booking, Hotel Booking, Travel Agency B2B">
+    <meta name="author" content="Tech Travel">
+    <meta name="robots" content="index, follow">
+    
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -44,6 +49,10 @@ app.get('/', (req, res) => {
         .search-btn { background: linear-gradient(90deg, #2276e3, #0052cc); color: white; font-weight: 700; font-size: 16px; border: none; padding: 14px; border-radius: 30px; cursor: pointer; width: 100%; }
         .flight-card, .hotel-card { background: white; border: 1px solid #e0e6ed; border-radius: 12px; padding: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         .book-btn { background: #ff6d00; color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; }
+        
+        /* Footer Custom Photo Styling */
+        .footer-banner { text-align: center; margin-top: 25px; padding: 10px; }
+        .footer-banner img { max-width: 100%; max-height: 450px; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); object-fit: cover; }
     </style>
 </head>
 <body>
@@ -105,6 +114,11 @@ app.get('/', (req, res) => {
             </div>
 
             <div id="results" style="margin-top:20px;"></div>
+        </div>
+
+        <!-- Google Drive Photo at the bottom -->
+        <div class="footer-banner">
+            <img src="https://lh3.googleusercontent.com/d/1xkGxH3nmw6USTqiRm13b9zGXVaCTADBZ" alt="Tech Travel Owner/Banner" id="bottomBanner">
         </div>
     </div>
 
