@@ -21,57 +21,91 @@ app.get('/', (req, res) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <title>Tech Travel - Best B2B Travel Portal | Flights & Hotels Booking</title>
-    <meta name="description" content="Tech Travel is the best B2B travel agency portal for instant flight and hotel bookings with exclusive agent markup.">
-    <meta name="keywords" content="Tech Travel, Tech Travel B2B, Tech Travel Portal, Flight Booking, Hotel Booking, Travel Agency B2B">
-    <meta name="author" content="Tech Travel">
-    <meta name="robots" content="index, follow">
-    
+    <title>Tech Travel - Flight & Hotel Booking Portal</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: #e6eded; margin: 0; padding: 0; }
-        .mmt-header { background: linear-gradient(to right, #051329, #102d5e); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 22px; font-weight: 800; color: #ff6d00; text-transform: uppercase; }
-        .logo span { color: #ffffff; }
-        .wallet-badge { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; }
-        .wallet-amount { color: #00ff87; font-size: 16px; font-weight: 700; }
-        .nav-tabs { display: flex; justify-content: center; gap: 15px; background: #ffffff; padding: 10px 0; border-bottom: 2px solid #e0e0e0; }
-        .nav-btn { background: transparent; border: none; padding: 10px 25px; border-radius: 25px; font-weight: 600; font-size: 14px; cursor: pointer; color: #555; }
-        .nav-btn.active { background: linear-gradient(90deg, #ec5b24, #ff7e00); color: white; }
-        .container { max-width: 900px; margin: 25px auto; padding: 0 15px; }
-        .card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); margin-bottom: 20px; }
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
+        body { background: #eef2f5; color: #333; }
+
+        /* Top Header */
+        .header { background: #ffffff; padding: 12px 50px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 24px; font-weight: 800; color: #000; text-transform: uppercase; }
+        .logo span { color: #d63031; }
+        .wallet-badge { background: #f8f9fa; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #4a5568; }
+        .wallet-amount { color: #27ae60; font-weight: 800; font-size: 15px; }
+
+        /* MMT Navigation Icons Bar */
+        .services-bar { background: #ffffff; padding: 15px 0; border-bottom: 1px solid #e0e0e0; margin-bottom: 25px; }
+        .services-list { display: flex; justify-content: center; gap: 30px; list-style: none; }
+        .service-item { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; color: #4a5568; font-weight: 600; font-size: 13px; padding: 5px 15px; border-bottom: 3px solid transparent; }
+        .service-item.active { color: #008cff; border-bottom-color: #008cff; }
+        .service-item span.icon { font-size: 22px; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        /* Search Card */
+        .card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 30px; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .form-group { background: #f4f6f8; padding: 10px 14px; border-radius: 10px; border: 1px solid #e2e8f0; }
         .form-group label { display: block; font-size: 11px; text-transform: uppercase; color: #7a8b9e; font-weight: 700; }
-        .form-group input, .form-group select { width: 100%; border: none; background: transparent; font-size: 14px; font-weight: 600; color: #2d3748; outline: none; }
-        .search-btn { background: linear-gradient(90deg, #2276e3, #0052cc); color: white; font-weight: 700; font-size: 16px; border: none; padding: 14px; border-radius: 30px; cursor: pointer; width: 100%; }
+        .form-group input { width: 100%; border: none; background: transparent; font-size: 14px; font-weight: 600; color: #2d3748; outline: none; }
+        .search-btn { background: linear-gradient(90deg, #008cff, #0052cc); color: white; font-weight: 700; font-size: 16px; border: none; padding: 12px; border-radius: 30px; cursor: pointer; width: 100%; }
+
+        /* Banner Box */
+        .promo-banner { background: linear-gradient(90deg, #102a43, #243b53); color: white; padding: 18px 25px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
+        .promo-banner button { background: #008cff; color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; }
+
+        /* OFFERS SECTION (Horizontal Scrollable Carousel) */
+        .offers-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .offers-title { font-size: 22px; font-weight: 800; color: #1e293b; }
+        .offer-tabs { display: flex; gap: 15px; list-style: none; font-size: 13px; font-weight: 600; color: #64748b; }
+        .offer-tab { cursor: pointer; padding-bottom: 4px; }
+        .offer-tab.active { color: #008cff; border-bottom: 2px solid #008cff; }
+
+        .offers-scroll-container { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 15px; scroll-behavior: smooth; }
+        .offers-scroll-container::-webkit-scrollbar { height: 6px; }
+        .offers-scroll-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .offer-card { flex: 0 0 320px; background: white; border-radius: 14px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.04); display: flex; gap: 12px; align-items: center; }
+        .offer-img { width: 85px; height: 85px; border-radius: 10px; object-fit: cover; }
+        .offer-content { flex: 1; }
+        .offer-tag { font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; }
+        .offer-heading { font-size: 13px; font-weight: 700; color: #0f172a; margin: 4px 0; line-height: 1.3; }
+        .offer-desc { font-size: 11px; color: #64748b; margin-bottom: 8px; }
+        .offer-btn { font-size: 11px; font-weight: 800; color: #008cff; text-decoration: none; cursor: pointer; }
+
+        /* Booking Cards */
         .flight-card, .hotel-card { background: white; border: 1px solid #e0e6ed; border-radius: 12px; padding: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         .book-btn { background: #ff6d00; color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; }
-        
-        /* Footer Custom Photo Styling */
-        .footer-banner { text-align: center; margin-top: 25px; padding: 10px; }
-        .footer-banner img { max-width: 100%; max-height: 450px; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); object-fit: cover; }
+
+        /* Footer Photo */
+        .footer-banner { text-align: center; margin: 40px 0; }
+        .footer-banner img { max-width: 100%; max-height: 400px; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
 
-    <div class="mmt-header">
-        <div class="logo">Tech <span>Travel</span> <small style="font-size:10px; color:#ff6d00;">B2B</small></div>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">Tech <span>Travel</span></div>
         <div class="wallet-badge">Wallet Balance: <span class="wallet-amount">₹<span id="bal">${agentWallet}</span></span></div>
     </div>
 
-    <div class="nav-tabs">
-        <button class="nav-btn active" id="flightTab" onclick="switchTab('flight')">✈️ Flights</button>
-        <button class="nav-btn" id="hotelTab" onclick="switchTab('hotel')">🏨 Hotels</button>
-        <button class="nav-btn" id="payTab" onclick="switchTab('pay')">💳 Add Money</button>
-        <button class="nav-btn" id="historyTab" onclick="switchTab('history')">📋 History</button>
+    <!-- MMT Navigation Bar -->
+    <div class="services-bar">
+        <ul class="services-list">
+            <li class="service-item active" id="flightTab" onclick="switchTab('flight')"><span class="icon">✈️</span> Flights</li>
+            <li class="service-item" id="hotelTab" onclick="switchTab('hotel')"><span class="icon">🏨</span> Hotels</li>
+            <li class="service-item" id="payTab" onclick="switchTab('pay')"><span class="icon">💳</span> Add Money</li>
+            <li class="service-item" id="historyTab" onclick="switchTab('history')"><span class="icon">📋</span> History</li>
+        </ul>
     </div>
 
     <div class="container">
+        
+        <!-- Search Form Section -->
         <div class="card">
-            <!-- Flight Section -->
             <div id="flightSection">
                 <div class="form-grid">
                     <div class="form-group">
@@ -86,20 +120,18 @@ app.get('/', (req, res) => {
                 <button class="search-btn" onclick="searchFlights()">SEARCH FLIGHTS</button>
             </div>
 
-            <!-- Hotel Section -->
             <div id="hotelSection" style="display:none;">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>City</label>
+                        <label>City / Location</label>
                         <input type="text" id="hCity" value="Jamnagar">
                     </div>
                 </div>
                 <button class="search-btn" style="background: #ff7e00;" onclick="searchHotels()">SEARCH HOTELS</button>
             </div>
 
-            <!-- Razorpay Payment Section -->
             <div id="paySection" style="display:none;">
-                <h3 style="margin-top:0;">Add Money to Wallet via Razorpay</h3>
+                <h3 style="margin-bottom:15px;">Add Money via Razorpay</h3>
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Amount (₹)</label>
                     <input type="number" id="addAmount" placeholder="Enter amount (e.g. 500)">
@@ -107,7 +139,6 @@ app.get('/', (req, res) => {
                 <button class="search-btn" style="background: #28a745;" onclick="payWithRazorpay()">PAY NOW</button>
             </div>
 
-            <!-- History Section -->
             <div id="historySection" style="display:none;">
                 <h3>Booking History</h3>
                 <div id="historyList">Loading...</div>
@@ -116,10 +147,77 @@ app.get('/', (req, res) => {
             <div id="results" style="margin-top:20px;"></div>
         </div>
 
-        <!-- Google Drive Photo at the bottom -->
-        <div class="footer-banner">
-            <img src="https://lh3.googleusercontent.com/d/1xkGxH3nmw6USTqiRm13b9zGXVaCTADBZ" alt="Tech Travel Owner/Banner" id="bottomBanner">
+        <!-- MMT Style Business Stay Promo Banner -->
+        <div class="promo-banner">
+            <div>
+                <h3 style="font-size:16px;">Work Better with Seamless Business Stays</h3>
+                <p style="font-size:12px; color:#cbd5e1;">Get exclusive Agent Markups & Corporate Discounts at Hyatt Hotels.</p>
+            </div>
+            <button onclick="switchTab('hotel')">BOOK NOW</button>
         </div>
+
+        <!-- OFFERS HORIZONTAL CAROUSEL (MakeMyTrip Style) -->
+        <div class="offers-header">
+            <div class="offers-title">Offers</div>
+            <ul class="offer-tabs">
+                <li class="offer-tab active">All Offers</li>
+                <li class="offer-tab">Flights</li>
+                <li class="offer-tab">Hotels</li>
+                <li class="offer-tab">Bank Offers</li>
+            </ul>
+        </div>
+
+        <div class="offers-scroll-container">
+            <!-- Offer 1 -->
+            <div class="offer-card">
+                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300&auto=format&fit=crop" class="offer-img" alt="Hotel Offer">
+                <div class="offer-content">
+                    <div class="offer-tag">T&C's Apply</div>
+                    <div class="offer-heading">Grab FLAT 40% OFF* on Hotels</div>
+                    <div class="offer-desc">Code: TECHESCAPE</div>
+                    <span class="offer-btn" onclick="switchTab('hotel')">BOOK NOW &rarr;</span>
+                </div>
+            </div>
+
+            <!-- Offer 2 -->
+            <div class="offer-card">
+                <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=300&auto=format&fit=crop" class="offer-img" alt="Flight Offer">
+                <div class="offer-content">
+                    <div class="offer-tag">Domestic Flights</div>
+                    <div class="offer-heading">Amazing Deal: Up to 15% OFF*</div>
+                    <div class="offer-desc">Valid on SBI & HDFC Cards</div>
+                    <span class="offer-btn" onclick="switchTab('flight')">VIEW DETAILS &rarr;</span>
+                </div>
+            </div>
+
+            <!-- Offer 3 -->
+            <div class="offer-card">
+                <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=300&auto=format&fit=crop" class="offer-img" alt="Luxury Hotel">
+                <div class="offer-content">
+                    <div class="offer-tag">Luxury Stays</div>
+                    <div class="offer-heading">LIVE NOW: Sale on 5-Star Hotels</div>
+                    <div class="offer-desc">Free Breakfast & Room Upgrade</div>
+                    <span class="offer-btn" onclick="switchTab('hotel')">BOOK NOW &rarr;</span>
+                </div>
+            </div>
+
+            <!-- Offer 4 -->
+            <div class="offer-card">
+                <img src="https://images.unsplash.com/photo-1512353087810-25dfcd100962?w=300&auto=format&fit=crop" class="offer-img" alt="International Flight">
+                <div class="offer-content">
+                    <div class="offer-tag">Air India Sale</div>
+                    <div class="offer-heading">Up to 10% OFF Premium Economy</div>
+                    <div class="offer-desc">On International Flights</div>
+                    <span class="offer-btn" onclick="switchTab('flight')">VIEW DETAILS &rarr;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Photo -->
+        <div class="footer-banner">
+            <img src="https://lh3.googleusercontent.com/d/1xkGxH3nmw6USTqiRm13b9zGXVaCTADBZ" alt="Owner Photo">
+        </div>
+
     </div>
 
     <script>
@@ -206,7 +304,7 @@ app.get('/', (req, res) => {
                         document.getElementById('bal').innerText = verifyData.newWallet;
                     }
                 },
-                "theme": { "color": "#0052cc" }
+                "theme": { "color": "#008cff" }
             };
             var rzp1 = new Razorpay(options);
             rzp1.open();
