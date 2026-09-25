@@ -22,6 +22,17 @@ let dynamicHotels = [
         tdsPercent: 2,
         email: "hotel@hyattjamnagar.com",
         whatsapp: "919876543210"
+    },
+    { 
+        id: "H102",
+        name: "Hotel Express Residency", 
+        city: "Jamnagar", 
+        rating: "4 Star", 
+        displayPrice: 3500,
+        gstin: "24BBBBB1111B2Z6",
+        tdsPercent: 2,
+        email: "express@jamnagar.com",
+        whatsapp: "919876543210"
     }
 ];
 
@@ -83,7 +94,10 @@ app.get('/', (req, res) => {
             <!-- SEARCH HOTELS -->
             <div id="hotelSection">
                 <div class="form-grid">
-                    <div class="form-group"><label>City / Location</label><input type="text" id="hCity" value="Jamnagar"></div>
+                    <div class="form-group">
+                        <label>City / Location</label>
+                        <input type="text" id="hCity" placeholder="Type City (e.g. Jamnagar)" value="Jamnagar">
+                    </div>
                 </div>
                 <button class="search-btn" id="btnSearchHotels">SEARCH HOTELS</button>
             </div>
@@ -125,6 +139,7 @@ app.get('/', (req, res) => {
             const hotelTab = document.getElementById('hotelTab');
             const partnerTab = document.getElementById('partnerTab');
             const historyTab = document.getElementById('historyTab');
+            const cityInput = document.getElementById('hCity');
 
             function switchTab(type) {
                 hotelSection.style.display = 'none';
@@ -159,6 +174,11 @@ app.get('/', (req, res) => {
             document.getElementById('btnSearchHotels').addEventListener('click', searchHotels);
             document.getElementById('btnSavePartner').addEventListener('click', registerHotelPartner);
 
+            // Live typing city search trigger
+            cityInput.addEventListener('keyup', function(e) {
+                searchHotels();
+            });
+
             async function registerHotelPartner() {
                 let name = document.getElementById('pName').value;
                 let city = document.getElementById('pCity').value;
@@ -182,18 +202,18 @@ app.get('/', (req, res) => {
                 let data = await res.json();
                 if(data.status === "SUCCESS") {
                     alert("Hotel successfully add ho gaya!");
-                    document.getElementById('hCity').value = city;
+                    cityInput.value = city;
                     switchTab('hotel');
                 }
             }
 
             async function searchHotels() {
-                let city = document.getElementById('hCity').value;
+                let city = cityInput.value;
                 let res = await fetch('/search-hotels', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ city }) });
                 let data = await res.json();
                 let html = '';
-                if(data.hotels.length === 0) {
-                    html = "<p style='color:#64748b; text-align:center;'>Koi hotel nahi mila.</p>";
+                if(!data.hotels || data.hotels.length === 0) {
+                    html = "<p style='color:#64748b; text-align:center;'>Is city mein koi hotel nahi mila.</p>";
                 } else {
                     data.hotels.forEach(function(h) {
                         let gstAmount = Math.round(h.displayPrice * 0.18);
@@ -291,9 +311,11 @@ app.get('/', (req, res) => {
 
 app.post('/search-hotels', (req, res) => {
     const city = (req.body.city || "").toLowerCase().trim();
-    if (!city) return res.json({ hotels: dynamicHotels });
+    if (!city) {
+        return res.json({ hotels: dynamicHotels });
+    }
     const filtered = dynamicHotels.filter(h => h.city.toLowerCase().includes(city));
-    res.json({ hotels: filtered.length > 0 ? filtered : dynamicHotels });
+    res.json({ hotels: filtered });
 });
 
 app.post('/add-hotel-partner', (req, res) => {
