@@ -4,9 +4,10 @@ const app = express();
 
 app.use(express.json());
 
+// RAZORPAY LIVE KEYS HERE
 const razorpay = new Razorpay({
-    key_id: 'rzp_test_Tg6Hmgg1bYKgGQ',
-    key_secret: 'PkIVv6VqzJ0BEqLwpwDysOMR'
+    key_id: 'RAZORPAY_LIVE_KEY_ID_HERE', 
+    key_secret: 'RAZORPAY_LIVE_KEY_SECRET_HERE'
 });
 
 let bookingsHistory = [];
@@ -91,7 +92,6 @@ app.get('/', (req, res) => {
 
     <div class="container">
         <div class="search-card">
-            <!-- SEARCH HOTELS -->
             <div id="hotelSection">
                 <div class="form-grid">
                     <div class="form-group">
@@ -102,7 +102,6 @@ app.get('/', (req, res) => {
                 <button class="search-btn" id="btnSearchHotels">SEARCH HOTELS</button>
             </div>
 
-            <!-- PARTNER PORTAL -->
             <div id="partnerSection" style="display:none;">
                 <div class="partner-box">
                     <h3>🏨 Hotel Partner Registration & Tax Details</h3>
@@ -120,7 +119,6 @@ app.get('/', (req, res) => {
                 </div>
             </div>
 
-            <!-- BOOKINGS -->
             <div id="historySection" style="display:none;">
                 <h3 style="margin-bottom:12px;">Your Bookings</h3>
                 <div id="historyList">Loading...</div>
@@ -174,7 +172,6 @@ app.get('/', (req, res) => {
             document.getElementById('btnSearchHotels').addEventListener('click', searchHotels);
             document.getElementById('btnSavePartner').addEventListener('click', registerHotelPartner);
 
-            // Live typing city search trigger
             cityInput.addEventListener('keyup', function(e) {
                 searchHotels();
             });
@@ -248,23 +245,12 @@ app.get('/', (req, res) => {
                 let orderData = await res.json();
 
                 var options = {
-                    "key": "rzp_test_Tg6Hmgg1bYKgGQ", 
+                    "key": "RAZORPAY_LIVE_KEY_ID_HERE", // PASTE LIVE KEY ID HERE
                     "amount": orderData.amount,
                     "currency": "INR",
                     "name": "Tech Travel",
                     "description": "Hotel Booking - " + title,
                     "order_id": orderData.id,
-                    "config": {
-                        "display": {
-                            "blocks": {
-                                "utib": {
-                                    "name": "Pay via UPI / Google Pay",
-                                    "instruments": [{ "method": "upi" }]
-                                }
-                            },
-                            "sequence": ["block.utib"]
-                        }
-                    },
                     "handler": async function (response){
                         let verifyRes = await fetch('/verify-booking', {
                             method: 'POST',
@@ -311,9 +297,7 @@ app.get('/', (req, res) => {
 
 app.post('/search-hotels', (req, res) => {
     const city = (req.body.city || "").toLowerCase().trim();
-    if (!city) {
-        return res.json({ hotels: dynamicHotels });
-    }
+    if (!city) return res.json({ hotels: dynamicHotels });
     const filtered = dynamicHotels.filter(h => h.city.toLowerCase().includes(city));
     res.json({ hotels: filtered });
 });
