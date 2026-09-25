@@ -4,10 +4,10 @@ const app = express();
 
 app.use(express.json());
 
-// RAZORPAY LIVE KEYS HERE
+// SCREENSHOT WALI NEW TEST KEYS
 const razorpay = new Razorpay({
-    key_id: 'RAZORPAY_LIVE_KEY_ID_HERE', 
-    key_secret: 'RAZORPAY_LIVE_KEY_SECRET_HERE'
+    key_id: 'rzp_test_Tg89YUKgx809cF', 
+    key_secret: 'v1AY4aAmVcVzUAIPT67YXJzq'
 });
 
 let bookingsHistory = [];
@@ -245,7 +245,7 @@ app.get('/', (req, res) => {
                 let orderData = await res.json();
 
                 var options = {
-                    "key": "RAZORPAY_LIVE_KEY_ID_HERE", // PASTE LIVE KEY ID HERE
+                    "key": "rzp_test_Tg89YUKgx809cF", 
                     "amount": orderData.amount,
                     "currency": "INR",
                     "name": "Tech Travel",
