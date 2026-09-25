@@ -1,20 +1,18 @@
 const express = require('express');
+const Razorpay = require('razorpay');
 const app = express();
 
 app.use(express.json());
 
+// Razorpay Instance (Aapki Test Keys)
+const razorpay = new Razorpay({
+    key_id: 'rzp_test_Tg6Hmgg1bYKgGQ',
+    key_secret: 'PkIVv6VqzJ0BEqLwpwDysOMR'
+});
+
 let agentWallet = 45500;
 let adminMarkup = 500;
 let bookingsHistory = [];
-
-const CITIES = [
-    { name: "Delhi", code: "DEL", airport: "Indira Gandhi Int'l Airport" },
-    { name: "Mumbai", code: "BOM", airport: "Chhatrapati Shivaji Maharaj Int'l Airport" },
-    { name: "Bengaluru", code: "BLR", airport: "Kempegowda Int'l Airport" },
-    { name: "Ahmedabad", code: "AMD", airport: "Sardar Vallabhbhai Patel Int'l Airport" },
-    { name: "Goa (Dabolim)", code: "GOI", airport: "Dabolim Airport" },
-    { name: "Jamnagar", code: "JGA", airport: "Jamnagar Airport" }
-];
 
 app.get('/', (req, res) => {
   res.send(`
@@ -24,6 +22,7 @@ app.get('/', (req, res) => {
     <meta charset="UTF-8">
     <title>Tech Travel B2B Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -37,7 +36,7 @@ app.get('/', (req, res) => {
         .nav-btn { background: transparent; border: none; padding: 10px 25px; border-radius: 25px; font-weight: 600; font-size: 14px; cursor: pointer; color: #555; }
         .nav-btn.active { background: linear-gradient(90deg, #ec5b24, #ff7e00); color: white; }
         .container { max-width: 900px; margin: 25px auto; padding: 0 15px; }
-        .card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); margin-bottom: 20px; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .form-group { background: #f4f6f8; padding: 10px 14px; border-radius: 10px; border: 1px solid #e2e8f0; }
         .form-group label { display: block; font-size: 11px; text-transform: uppercase; color: #7a8b9e; font-weight: 700; }
@@ -57,11 +56,13 @@ app.get('/', (req, res) => {
     <div class="nav-tabs">
         <button class="nav-btn active" id="flightTab" onclick="switchTab('flight')">✈️ Flights</button>
         <button class="nav-btn" id="hotelTab" onclick="switchTab('hotel')">🏨 Hotels</button>
+        <button class="nav-btn" id="payTab" onclick="switchTab('pay')">💳 Add Money</button>
         <button class="nav-btn" id="historyTab" onclick="switchTab('history')">📋 History</button>
     </div>
 
     <div class="container">
         <div class="card">
+            <!-- Flight Section -->
             <div id="flightSection">
                 <div class="form-grid">
                     <div class="form-group">
@@ -76,6 +77,7 @@ app.get('/', (req, res) => {
                 <button class="search-btn" onclick="searchFlights()">SEARCH FLIGHTS</button>
             </div>
 
+            <!-- Hotel Section -->
             <div id="hotelSection" style="display:none;">
                 <div class="form-grid">
                     <div class="form-group">
@@ -86,6 +88,17 @@ app.get('/', (req, res) => {
                 <button class="search-btn" style="background: #ff7e00;" onclick="searchHotels()">SEARCH HOTELS</button>
             </div>
 
+            <!-- Razorpay Payment Section -->
+            <div id="paySection" style="display:none;">
+                <h3 style="margin-top:0;">Add Money to Wallet via Razorpay</h3>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Amount (₹)</label>
+                    <input type="number" id="addAmount" placeholder="Enter amount (e.g. 500)">
+                </div>
+                <button class="search-btn" style="background: #28a745;" onclick="payWithRazorpay()">PAY NOW</button>
+            </div>
+
+            <!-- History Section -->
             <div id="historySection" style="display:none;">
                 <h3>Booking History</h3>
                 <div id="historyList">Loading...</div>
@@ -97,7 +110,7 @@ app.get('/', (req, res) => {
 
     <script>
         function switchTab(type) {
-            ['flight', 'hotel', 'history'].forEach(t => {
+            ['flight', 'hotel', 'pay', 'history'].forEach(t => {
                 document.getElementById(t + 'Section').style.display = 'none';
                 document.getElementById(t + 'Tab').classList.remove('active');
             });
@@ -145,6 +158,46 @@ app.get('/', (req, res) => {
             }
         }
 
+        async function payWithRazorpay() {
+            let amount = document.getElementById('addAmount').value;
+            if(!amount || amount <= 0) return alert("Please enter a valid amount");
+
+            let res = await fetch('/create-order', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ amount: Number(amount) })
+            });
+            let orderData = await res.json();
+
+            if(orderData.error) {
+                return alert("Payment Error: " + orderData.error);
+            }
+
+            var options = {
+                "key": "rzp_test_Tg6Hmgg1bYKgGQ", 
+                "amount": orderData.amount,
+                "currency": "INR",
+                "name": "Tech Travel",
+                "description": "Add Wallet Balance",
+                "order_id": orderData.id,
+                "handler": async function (response){
+                    let verifyRes = await fetch('/verify-payment', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ amount: Number(amount) })
+                    });
+                    let verifyData = await verifyRes.json();
+                    if(verifyData.status === "SUCCESS") {
+                        alert("Payment Successful! Wallet Updated.");
+                        document.getElementById('bal').innerText = verifyData.newWallet;
+                    }
+                },
+                "theme": { "color": "#0052cc" }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+
         async function loadHistory() {
             let res = await fetch('/history');
             let data = await res.json();
@@ -154,7 +207,7 @@ app.get('/', (req, res) => {
             }
             let html = '';
             data.bookings.forEach(b => {
-                html += \`<div style="padding:10px; border:1px solid #ccc; margin-bottom:10px;">
+                html += \`<div style="padding:10px; border:1px solid #ccc; margin-bottom:10px; border-radius:8px;">
                     <b>\${b.pnr}</b> | \${b.type} - \${b.title} | ₹\${b.fare}
                 </div>\`;
             });
@@ -191,6 +244,26 @@ app.post('/book', (req, res) => {
     const bookingDate = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
     bookingsHistory.unshift({ pnr, type, title, fare, date: bookingDate });
     res.json({ status: "SUCCESS", newWallet: agentWallet, pnr });
+});
+
+app.post('/create-order', async (req, res) => {
+    const options = {
+        amount: req.body.amount * 100,
+        currency: "INR",
+        receipt: "rcpt_" + Date.now()
+    };
+    try {
+        const order = await razorpay.orders.create(options);
+        res.json(order);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/verify-payment', (req, res) => {
+    const { amount } = req.body;
+    agentWallet += amount;
+    res.json({ status: "SUCCESS", newWallet: agentWallet });
 });
 
 app.get('/history', (req, res) => res.json({ bookings: bookingsHistory }));
