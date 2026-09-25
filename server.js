@@ -4,7 +4,6 @@ const app = express();
 
 app.use(express.json());
 
-// SCREENSHOT WALI NEW TEST KEYS
 const razorpay = new Razorpay({
     key_id: 'rzp_test_Tg89YUKgx809cF', 
     key_secret: 'v1AY4aAmVcVzUAIPT67YXJzq'
@@ -251,6 +250,9 @@ app.get('/', (req, res) => {
                     "name": "Tech Travel",
                     "description": "Hotel Booking - " + title,
                     "order_id": orderData.id,
+                    "prefill": {
+                        "method": "upi"
+                    },
                     "handler": async function (response){
                         let verifyRes = await fetch('/verify-booking', {
                             method: 'POST',
