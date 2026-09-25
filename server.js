@@ -61,7 +61,7 @@ app.get('/', (req, res) => {
         .promo-banner p { font-size: 12px; color: #94a3b8; }
         .promo-btn { background: #008cff; color: white; border: none; padding: 10px 24px; border-radius: 25px; font-weight: 700; cursor: pointer; font-size: 13px; }
 
-        /* OFFERS CAROUSEL SECTION (MakeMyTrip Style) */
+        /* OFFERS CAROUSEL SECTION */
         .offers-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
         .offers-title { font-size: 24px; font-weight: 800; color: #0f172a; }
         .offer-tabs { display: flex; gap: 20px; list-style: none; font-size: 14px; font-weight: 600; color: #64748b; }
@@ -84,14 +84,14 @@ app.get('/', (req, res) => {
         .flight-card, .hotel-card { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .book-btn { background: #ff6d00; color: white; border: none; padding: 10px 24px; border-radius: 25px; font-weight: 700; cursor: pointer; font-size: 14px; }
 
-        /* Footer Owner Photo */
+        /* Footer Banner Section */
         .footer-banner { text-align: center; margin: 50px 0 30px; }
-        .footer-banner img { max-width: 100%; max-height: 420px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+        .footer-banner img { width: 100%; max-width: 900px; height: 260px; border-radius: 20px; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
     </style>
 </head>
 <body>
 
-    <!-- MMT Header -->
+    <!-- Header -->
     <div class="header">
         <div class="logo">tech <span>my</span> trip</div>
         <div class="top-nav-right">
@@ -100,7 +100,7 @@ app.get('/', (req, res) => {
         </div>
     </div>
 
-    <!-- MMT Navigation Bar -->
+    <!-- Navigation Bar -->
     <div class="services-bar">
         <ul class="services-list">
             <li class="service-item active" id="flightTab" onclick="switchTab('flight')"><span class="icon">✈️</span> Flights</li>
@@ -111,7 +111,7 @@ app.get('/', (req, res) => {
 
     <div class="container">
         
-        <!-- Search Form Section -->
+        <!-- Search Card -->
         <div class="search-card">
             <div class="trip-type">
                 <label><input type="radio" name="trip" checked> One Way</label>
@@ -159,7 +159,7 @@ app.get('/', (req, res) => {
             <div id="results" style="margin-top:25px;"></div>
         </div>
 
-        <!-- MMT Style Business Stay Promo Banner -->
+        <!-- Hyatt Business Banner -->
         <div class="promo-banner">
             <div>
                 <h3>Work Better with Seamless Business Stays</h3>
@@ -168,7 +168,7 @@ app.get('/', (req, res) => {
             <button class="promo-btn" onclick="switchTab('hotel')">BOOK NOW</button>
         </div>
 
-        <!-- OFFERS HORIZONTAL CAROUSEL (Exact MakeMyTrip Style) -->
+        <!-- OFFERS HORIZONTAL CAROUSEL -->
         <div class="offers-header">
             <div class="offers-title">Offers</div>
             <ul class="offer-tabs">
@@ -180,7 +180,6 @@ app.get('/', (req, res) => {
         </div>
 
         <div class="offers-scroll-container">
-            <!-- Offer 1 -->
             <div class="offer-card">
                 <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300&auto=format&fit=crop" class="offer-img" alt="Hotel Offer">
                 <div class="offer-content">
@@ -191,7 +190,6 @@ app.get('/', (req, res) => {
                 </div>
             </div>
 
-            <!-- Offer 2 -->
             <div class="offer-card">
                 <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=300&auto=format&fit=crop" class="offer-img" alt="Flight Offer">
                 <div class="offer-content">
@@ -202,7 +200,6 @@ app.get('/', (req, res) => {
                 </div>
             </div>
 
-            <!-- Offer 3 -->
             <div class="offer-card">
                 <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=300&auto=format&fit=crop" class="offer-img" alt="Luxury Hotel">
                 <div class="offer-content">
@@ -213,7 +210,6 @@ app.get('/', (req, res) => {
                 </div>
             </div>
 
-            <!-- Offer 4 -->
             <div class="offer-card">
                 <img src="https://images.unsplash.com/photo-1512353087810-25dfcd100962?w=300&auto=format&fit=crop" class="offer-img" alt="Air India Sale">
                 <div class="offer-content">
@@ -225,9 +221,11 @@ app.get('/', (req, res) => {
             </div>
         </div>
 
-        <!-- Footer Photo Banner -->
+        <!-- Footer Banner (Fixed Image Link) -->
         <div class="footer-banner">
-            <img src="https://lh3.googleusercontent.com/d/1xkGxH3nmw6USTqiRm13b9zGXVaCTADBZ" alt="Owner Photo">
+            <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&auto=format&fit=crop" 
+                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200&auto=format&fit=crop';" 
+                 alt="Tech Travel Promo Banner">
         </div>
 
     </div>
