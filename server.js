@@ -1,8 +1,10 @@
 const express = require('express');
 const Razorpay = require('razorpay');
+const path = require('path');
 const app = express();
 
 app.use(express.json());
+app.use(express.static(__dirname));
 
 const razorpay = new Razorpay({
     key_id: 'rzp_test_Tg89YUKgx809cF', 
@@ -60,6 +62,8 @@ app.get('/', (req, res) => {
         .service-item { display: flex; align-items: center; gap: 6px; cursor: pointer; color: #4a5568; font-weight: 600; font-size: 13px; padding: 6px 12px; border-bottom: 3px solid transparent; white-space: nowrap; }
         .service-item.active { color: #008cff; border-bottom-color: #008cff; font-weight: 700; }
         .container { max-width: 1100px; margin: 0 auto; padding: 0 15px; }
+        .hero-card { background: white; border-radius: 20px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 25px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; text-align: center; }
+        .hero-img { width: 100%; max-height: 450px; object-fit: cover; display: block; }
         .search-card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 25px rgba(0,0,0,0.06); margin-bottom: 25px; border: 1px solid #e2e8f0; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
         .form-group { background: #f8fafc; padding: 12px 16px; border-radius: 14px; border: 1px solid #e2e8f0; }
@@ -90,6 +94,11 @@ app.get('/', (req, res) => {
     </div>
 
     <div class="container">
+        <!-- Bullet Photo Banner -->
+        <div class="hero-card">
+            <img src="/1000251878.jpg" alt="Tech Travel Banner" class="hero-img">
+        </div>
+
         <div class="search-card">
             <div id="hotelSection">
                 <div class="form-grid">
