@@ -26,72 +26,68 @@ app.get('/', (req, res) => {
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
         body { background: #eef2f5; color: #333; }
 
-        /* Top Header - MMT Style */
-        .header { background: #ffffff; padding: 12px 60px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 26px; font-weight: 900; color: #000; text-transform: lowercase; letter-spacing: -1px; }
-        .logo span { color: #e53935; background: #e53935; color: #fff; padding: 2px 8px; border-radius: 6px; font-weight: 800; margin: 0 2px; }
-        .top-nav-right { display: flex; align-items: center; gap: 20px; font-size: 12px; font-weight: 600; color: #4a5568; }
-        .btn-login { background: linear-gradient(90deg, #008cff, #0052cc); color: white; border: none; padding: 8px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; }
+        /* Top Header */
+        .header { background: #ffffff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 22px; font-weight: 900; color: #000; text-transform: lowercase; letter-spacing: -1px; }
+        .logo span { background: #e53935; color: #fff; padding: 2px 6px; border-radius: 6px; font-weight: 800; margin: 0 2px; }
+        .top-nav-right { display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 600; color: #4a5568; }
+        .btn-login { background: linear-gradient(90deg, #008cff, #0052cc); color: white; border: none; padding: 6px 14px; border-radius: 20px; font-weight: 700; cursor: pointer; }
 
-        /* MMT Navigation Icons Bar */
-        .services-bar { background: #ffffff; padding: 15px 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .services-list { display: flex; justify-content: center; gap: 35px; list-style: none; }
-        .service-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: #4a5568; font-weight: 600; font-size: 12px; padding: 5px 12px; border-bottom: 3px solid transparent; transition: 0.2s; }
+        /* Services Navigation */
+        .services-bar { background: #ffffff; padding: 12px 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .services-list { display: flex; justify-content: center; gap: 25px; list-style: none; }
+        .service-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: #4a5568; font-weight: 600; font-size: 11px; padding: 4px 8px; border-bottom: 3px solid transparent; transition: 0.2s; }
         .service-item.active { color: #008cff; border-bottom-color: #008cff; font-weight: 700; }
-        .service-item span.icon { font-size: 22px; }
+        .service-item span.icon { font-size: 20px; }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 15px; }
 
-        /* MMT Search Widget Container */
-        .search-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.06); margin-bottom: 30px; border: 1px solid #e2e8f0; }
-        .trip-type { display: flex; gap: 20px; font-size: 13px; font-weight: 600; margin-bottom: 20px; color: #4a5568; }
-        .trip-type label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        /* Search Form Card */
+        .search-card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.06); margin-bottom: 25px; border: 1px solid #e2e8f0; }
+        .trip-type { display: flex; gap: 15px; font-size: 12px; font-weight: 600; margin-bottom: 15px; color: #4a5568; }
+        .trip-type label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
         
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 25px; }
-        .form-group { background: #f8fafc; padding: 12px 16px; border-radius: 12px; border: 1px solid #e2e8f0; transition: 0.2s; }
-        .form-group:hover { background: #f1f5f9; border-color: #cbd5e1; }
-        .form-group label { display: block; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 4px; }
-        .form-group input { width: 100%; border: none; background: transparent; font-size: 16px; font-weight: 700; color: #0f172a; outline: none; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .form-group { background: #f8fafc; padding: 10px 14px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .form-group label { display: block; font-size: 10px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 2px; }
+        .form-group input { width: 100%; border: none; background: transparent; font-size: 15px; font-weight: 700; color: #0f172a; outline: none; }
         
-        .search-btn { background: linear-gradient(90deg, #008cff, #0052cc); color: white; font-weight: 800; font-size: 18px; border: none; padding: 14px; border-radius: 35px; cursor: pointer; width: 240px; margin: 0 auto; display: block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0,140,255,0.3); }
+        .search-btn { background: linear-gradient(90deg, #008cff, #0052cc); color: white; font-weight: 800; font-size: 16px; border: none; padding: 12px; border-radius: 35px; cursor: pointer; width: 100%; max-width: 220px; margin: 0 auto; display: block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0,140,255,0.3); }
 
-        /* Hyatt Business Banner */
-        .promo-banner { background: linear-gradient(90deg, #0f172a, #1e293b); color: white; padding: 20px 30px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .promo-banner h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-        .promo-banner p { font-size: 12px; color: #94a3b8; }
-        .promo-btn { background: #008cff; color: white; border: none; padding: 10px 24px; border-radius: 25px; font-weight: 700; cursor: pointer; font-size: 13px; }
+        /* Promo Banner */
+        .promo-banner { background: linear-gradient(90deg, #0f172a, #1e293b); color: white; padding: 18px 20px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .promo-banner h3 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+        .promo-banner p { font-size: 11px; color: #94a3b8; }
+        .promo-btn { background: #008cff; color: white; border: none; padding: 8px 18px; border-radius: 25px; font-weight: 700; cursor: pointer; font-size: 12px; white-space: nowrap; }
 
-        /* OFFERS CAROUSEL SECTION */
-        .offers-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-        .offers-title { font-size: 24px; font-weight: 800; color: #0f172a; }
-        .offer-tabs { display: flex; gap: 20px; list-style: none; font-size: 14px; font-weight: 600; color: #64748b; }
-        .offer-tab { cursor: pointer; padding-bottom: 4px; }
-        .offer-tab.active { color: #008cff; border-bottom: 3px solid #008cff; font-weight: 700; }
+        /* Carousel */
+        .offers-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .offers-title { font-size: 20px; font-weight: 800; color: #0f172a; }
+        .offer-tabs { display: flex; gap: 12px; list-style: none; font-size: 12px; font-weight: 600; color: #64748b; }
+        .offer-tab { cursor: pointer; padding-bottom: 2px; }
+        .offer-tab.active { color: #008cff; border-bottom: 2px solid #008cff; font-weight: 700; }
 
-        .offers-scroll-container { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 15px; scroll-behavior: smooth; }
-        .offers-scroll-container::-webkit-scrollbar { height: 6px; }
-        .offers-scroll-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-
-        .offer-card { flex: 0 0 330px; background: white; border-radius: 16px; padding: 18px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; gap: 14px; align-items: center; }
-        .offer-img { width: 90px; height: 90px; border-radius: 12px; object-fit: cover; }
+        .offers-scroll-container { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 12px; scroll-behavior: smooth; }
+        .offer-card { flex: 0 0 290px; background: white; border-radius: 14px; padding: 14px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; gap: 12px; align-items: center; }
+        .offer-img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; }
         .offer-content { flex: 1; }
-        .offer-tag { font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; }
-        .offer-heading { font-size: 14px; font-weight: 700; color: #0f172a; margin: 4px 0; line-height: 1.3; }
-        .offer-desc { font-size: 11px; color: #64748b; margin-bottom: 10px; }
-        .offer-btn { font-size: 12px; font-weight: 800; color: #008cff; text-decoration: none; cursor: pointer; }
+        .offer-tag { font-size: 9px; color: #64748b; font-weight: 700; text-transform: uppercase; }
+        .offer-heading { font-size: 13px; font-weight: 700; color: #0f172a; margin: 2px 0; line-height: 1.2; }
+        .offer-desc { font-size: 10px; color: #64748b; margin-bottom: 8px; }
+        .offer-btn { font-size: 11px; font-weight: 800; color: #008cff; cursor: pointer; }
 
-        /* Booking Results Card */
-        .flight-card, .hotel-card { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .book-btn { background: #ff6d00; color: white; border: none; padding: 10px 24px; border-radius: 25px; font-weight: 700; cursor: pointer; font-size: 14px; }
+        /* Booking Cards */
+        .flight-card, .hotel-card { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .book-btn { background: #ff6d00; color: white; border: none; padding: 8px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 13px; }
 
-        /* Footer Banner Section */
-        .footer-banner { text-align: center; margin: 50px 0 30px; }
-        .footer-banner img { width: 100%; max-width: 900px; height: 260px; border-radius: 20px; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+        /* Footer Banner Container */
+        .footer-banner { text-align: center; margin: 30px 0 20px; padding: 15px; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .footer-banner img { width: 100%; max-width: 600px; height: auto; border-radius: 12px; display: block; margin: 0 auto; }
+        .footer-banner .fallback-card { padding: 25px 15px; background: linear-gradient(135deg, #0f172a, #1e293b); color: #ffffff; border-radius: 12px; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
     <div class="header">
         <div class="logo">tech <span>my</span> trip</div>
         <div class="top-nav-right">
@@ -100,7 +96,6 @@ app.get('/', (req, res) => {
         </div>
     </div>
 
-    <!-- Navigation Bar -->
     <div class="services-bar">
         <ul class="services-list">
             <li class="service-item active" id="flightTab" onclick="switchTab('flight')"><span class="icon">✈️</span> Flights</li>
@@ -110,13 +105,10 @@ app.get('/', (req, res) => {
     </div>
 
     <div class="container">
-        
-        <!-- Search Card -->
         <div class="search-card">
             <div class="trip-type">
                 <label><input type="radio" name="trip" checked> One Way</label>
                 <label><input type="radio" name="trip"> Round Trip</label>
-                <label><input type="radio" name="trip"> Multi City</label>
             </div>
 
             <div id="flightSection">
@@ -152,85 +144,73 @@ app.get('/', (req, res) => {
             </div>
 
             <div id="historySection" style="display:none;">
-                <h3 style="margin-bottom:15px; color:#0f172a;">Your Recent Bookings</h3>
+                <h3 style="margin-bottom:12px; color:#0f172a;">Your Recent Bookings</h3>
                 <div id="historyList">Loading...</div>
             </div>
 
-            <div id="results" style="margin-top:25px;"></div>
+            <div id="results" style="margin-top:20px;"></div>
         </div>
 
-        <!-- Hyatt Business Banner -->
         <div class="promo-banner">
             <div>
-                <h3>Work Better with Seamless Business Stays</h3>
-                <p>At Hyatt Business Hotels. Exclusive corporate discounts on Tech Travel.</p>
+                <h3>Seamless Business Stays</h3>
+                <p>Exclusive corporate discounts on Tech Travel.</p>
             </div>
             <button class="promo-btn" onclick="switchTab('hotel')">BOOK NOW</button>
         </div>
 
-        <!-- OFFERS HORIZONTAL CAROUSEL -->
         <div class="offers-header">
             <div class="offers-title">Offers</div>
             <ul class="offer-tabs">
                 <li class="offer-tab active">All Offers</li>
                 <li class="offer-tab">Flights</li>
                 <li class="offer-tab">Hotels</li>
-                <li class="offer-tab">Bank Offers</li>
             </ul>
         </div>
 
         <div class="offers-scroll-container">
             <div class="offer-card">
-                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300&auto=format&fit=crop" class="offer-img" alt="Hotel Offer">
+                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=200&auto=format&fit=crop" class="offer-img" alt="Hotel Offer">
                 <div class="offer-content">
                     <div class="offer-tag">T&C's Apply</div>
-                    <div class="offer-heading">For the 2nd-4th Long Weekend:</div>
-                    <div class="offer-desc">Grab Up to 40% OFF* on Trips. Code: MMTESCAPE</div>
+                    <div class="offer-heading">Long Weekend Deals</div>
+                    <div class="offer-desc">Up to 40% OFF*. Code: MMTESCAPE</div>
                     <span class="offer-btn" onclick="switchTab('hotel')">BOOK NOW &rarr;</span>
                 </div>
             </div>
 
             <div class="offer-card">
-                <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=300&auto=format&fit=crop" class="offer-img" alt="Flight Offer">
+                <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=200&auto=format&fit=crop" class="offer-img" alt="Flight Offer">
                 <div class="offer-content">
                     <div class="offer-tag">Bank Offer</div>
-                    <div class="offer-heading">Amazing Deal for You: Grab FLAT 10% OFF*</div>
-                    <div class="offer-desc">on Domestic & International Flights.</div>
+                    <div class="offer-heading">FLAT 10% OFF*</div>
+                    <div class="offer-desc">On Flights & Hotels.</div>
                     <span class="offer-btn" onclick="switchTab('flight')">VIEW DETAILS &rarr;</span>
-                </div>
-            </div>
-
-            <div class="offer-card">
-                <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=300&auto=format&fit=crop" class="offer-img" alt="Luxury Hotel">
-                <div class="offer-content">
-                    <div class="offer-tag">VISA Cards</div>
-                    <div class="offer-heading">Up to 15% OFF* on flights & hotels</div>
-                    <div class="offer-desc">Valid on IndusInd VISA Debit Card</div>
-                    <span class="offer-btn" onclick="switchTab('hotel')">VIEW DETAILS &rarr;</span>
-                </div>
-            </div>
-
-            <div class="offer-card">
-                <img src="https://images.unsplash.com/photo-1512353087810-25dfcd100962?w=300&auto=format&fit=crop" class="offer-img" alt="Air India Sale">
-                <div class="offer-content">
-                    <div class="offer-tag">Air India</div>
-                    <div class="offer-heading">LIVE NOW: Sale by Air India</div>
-                    <div class="offer-desc">with Up to 10% OFF* on Premium Economy.</div>
-                    <span class="offer-btn" onclick="switchTab('flight')">BOOK NOW &rarr;</span>
                 </div>
             </div>
         </div>
 
-        <!-- Footer Banner (Fixed Image Link) -->
+        <!-- Working Footer Image Banner with Clean Fallback -->
         <div class="footer-banner">
-            <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&auto=format&fit=crop" 
-                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200&auto=format&fit=crop';" 
-                 alt="Tech Travel Promo Banner">
+            <div id="bannerContainer">
+                <img src="https://i.ibb.co/6P8fC7n/travel-banner.jpg" 
+                     onerror="showFallbackBanner()" 
+                     alt="Tech Travel Banner">
+            </div>
         </div>
 
     </div>
 
     <script>
+        function showFallbackBanner() {
+            document.getElementById('bannerContainer').innerHTML = `
+                <div class="fallback-card">
+                    <h2 style="font-size: 18px; margin-bottom: 5px; color: #008cff;">Tech Travel Official</h2>
+                    <p style="font-size: 12px; color: #cbd5e1;">Your Trusted Partner for Flights, Hotels & Holiday Packages</p>
+                </div>
+            `;
+        }
+
         function switchTab(type) {
             ['flight', 'hotel', 'history'].forEach(t => {
                 document.getElementById(t + 'Section').style.display = 'none';
@@ -249,11 +229,11 @@ app.get('/', (req, res) => {
             data.flights.forEach(f => {
                 html += \`<div class="flight-card">
                     <div>
-                        <b style="font-size:16px;">\${f.airline}</b> (\${f.flightNo})
-                        <div style="color:#64748b; font-size:12px;">Departure: \${f.time}</div>
+                        <b style="font-size:15px;">\${f.airline}</b> (\${f.flightNo})
+                        <div style="color:#64748b; font-size:11px;">Departure: \${f.time}</div>
                     </div>
                     <div>
-                        <span style="font-size:20px; font-weight:800; color:#0f172a; margin-right:15px;">₹\${f.displayPrice}</span>
+                        <span style="font-size:18px; font-weight:800; color:#0f172a; margin-right:10px;">₹\${f.displayPrice}</span>
                         <button class="book-btn" onclick="payDirect(\${f.displayPrice}, 'Flight', '\${f.airline}')">BOOK NOW</button>
                     </div>
                 </div>\`;
@@ -269,11 +249,11 @@ app.get('/', (req, res) => {
             data.hotels.forEach(h => {
                 html += \`<div class="hotel-card">
                     <div>
-                        <b style="font-size:16px;">\${h.name}</b>
-                        <div style="color:#22c55e; font-size:12px; font-weight:700;">★ \${h.rating} Rating</div>
+                        <b style="font-size:15px;">\${h.name}</b>
+                        <div style="color:#22c55e; font-size:11px; font-weight:700;">★ \${h.rating} Rating</div>
                     </div>
                     <div>
-                        <span style="font-size:20px; font-weight:800; color:#0f172a; margin-right:15px;">₹\${h.displayPrice}</span>
+                        <span style="font-size:18px; font-weight:800; color:#0f172a; margin-right:10px;">₹\${h.displayPrice}</span>
                         <button class="book-btn" style="background:#28a745;" onclick="payDirect(\${h.displayPrice}, 'Hotel', '\${h.name}')">BOOK NOW</button>
                     </div>
                 </div>\`;
@@ -326,8 +306,8 @@ app.get('/', (req, res) => {
             }
             let html = '';
             data.bookings.forEach(b => {
-                html += \`<div style="padding:15px; border:1px solid #e2e8f0; margin-bottom:10px; border-radius:10px; background:#f8fafc;">
-                    <b>\${b.pnr}</b> | \${b.type} - \${b.title} | <b>₹\${b.fare}</b> <small style="color:#64748b; margin-left:10px;">\${b.date}</small>
+                html += \`<div style="padding:12px; border:1px solid #e2e8f0; margin-bottom:8px; border-radius:10px; background:#f8fafc;">
+                    <b>\${b.pnr}</b> | \${b.type} - \${b.title} | <b>₹\${b.fare}</b> <small style="color:#64748b; margin-left:8px;">\${b.date}</small>
                 </div>\`;
             });
             document.getElementById('historyList').innerHTML = html;
