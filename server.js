@@ -32,35 +32,40 @@ app.get('/', (req, res) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tech Travel Portal</title>
+    <title>Tech Travel - Flight & Hotel Portal</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
         body { background: #eef2f5; color: #333; }
-        .header { background: #ffffff; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 20px; font-weight: 900; color: #000; text-transform: lowercase; }
-        .logo span { background: #e53935; color: #fff; padding: 2px 6px; border-radius: 6px; font-weight: 800; }
-        .top-nav-right { display: flex; gap: 6px; }
-        .btn-login { background: #008cff; color: white; border: none; padding: 8px 12px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 11px; }
-        .btn-add-hotel { background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 11px; }
 
-        .services-bar { background: #ffffff; padding: 10px; border-bottom: 1px solid #e2e8f0; margin-bottom: 15px; }
-        .services-list { display: flex; justify-content: space-around; list-style: none; }
-        .service-item { cursor: pointer; color: #4a5568; font-weight: 600; font-size: 12px; padding: 6px 10px; border-bottom: 3px solid transparent; }
+        .header { background: #ffffff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 22px; font-weight: 900; color: #000; text-transform: lowercase; letter-spacing: -1px; }
+        .logo span { background: #e53935; color: #fff; padding: 2px 6px; border-radius: 6px; font-weight: 800; margin: 0 2px; }
+        .top-nav-right { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 600; }
+        .btn-login { background: linear-gradient(90deg, #008cff, #0052cc); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; cursor: pointer; }
+        .btn-add-hotel { background: #28a745; color: white; border: none; padding: 8px 14px; border-radius: 20px; font-weight: 700; cursor: pointer; }
+
+        .services-bar { background: #ffffff; padding: 12px 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px; }
+        .services-list { display: flex; justify-content: center; gap: 15px; list-style: none; overflow-x: auto; padding: 0 10px; }
+        .service-item { display: flex; align-items: center; gap: 6px; cursor: pointer; color: #4a5568; font-weight: 600; font-size: 13px; padding: 6px 12px; border-bottom: 3px solid transparent; white-space: nowrap; }
         .service-item.active { color: #008cff; border-bottom-color: #008cff; font-weight: 700; }
 
-        .container { max-width: 800px; margin: 0 auto; padding: 0 12px; }
-        .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0; }
-        
-        .form-group { background: #f8fafc; padding: 10px 14px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 10px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 2px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 15px; }
+
+        .search-card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 25px rgba(0,0,0,0.06); margin-bottom: 25px; border: 1px solid #e2e8f0; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .form-group { background: #f8fafc; padding: 12px 16px; border-radius: 14px; border: 1px solid #e2e8f0; }
+        .form-group label { display: block; font-size: 10px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 4px; }
         .form-group input, .form-group select { width: 100%; border: none; background: transparent; font-size: 15px; font-weight: 700; color: #0f172a; outline: none; }
         
-        .search-btn { background: #ff5100; color: white; font-weight: 800; font-size: 15px; border: none; padding: 14px; border-radius: 30px; cursor: pointer; width: 100%; text-transform: uppercase; display: block; }
+        .search-btn { background: linear-gradient(90deg, #ff7e00, #ff5100); color: white; font-weight: 800; font-size: 16px; border: none; padding: 14px; border-radius: 35px; cursor: pointer; width: 100%; max-width: 260px; margin: 0 auto; display: block; text-transform: uppercase; box-shadow: 0 4px 15px rgba(255,81,0,0.3); }
 
-        .hotel-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .book-btn { background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 18px; font-weight: 700; cursor: pointer; font-size: 12px; }
+        .hotel-card { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .book-btn { background: #28a745; color: white; border: none; padding: 8px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 13px; }
+
+        .partner-box { background: #f0f9ff; border: 2px solid #008cff; padding: 20px; border-radius: 16px; margin-bottom: 20px; }
+        .partner-box h3 { color: #008cff; font-size: 18px; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -68,57 +73,60 @@ app.get('/', (req, res) => {
     <div class="header">
         <div class="logo">tech <span>my</span> trip</div>
         <div class="top-nav-right">
-            <button class="btn-add-hotel" onclick="switchTab('partner')">🏨 Partner Portal</button>
-            <button class="btn-login" onclick="switchTab('history')">Bookings</button>
+            <button class="btn-add-hotel" onclick="switchTab('partner')">🏨 Hotel Partner Portal</button>
+            <button class="btn-login" onclick="switchTab('history')">My Bookings</button>
         </div>
     </div>
 
     <div class="services-bar">
         <div class="services-list">
-            <span class="service-item active" id="hotelTab" onclick="switchTab('hotel')">🏨 Book Hotels</span>
-            <span class="service-item" id="partnerTab" onclick="switchTab('partner')">📄 Partner (GST/TDS)</span>
-            <span class="service-item" id="historyTab" onclick="switchTab('history')">📋 Receipts</span>
+            <div class="service-item active" id="hotelTab" onclick="switchTab('hotel')">🏨 Book Hotels</div>
+            <div class="service-item" id="partnerTab" onclick="switchTab('partner')">📄 Hotel Partner Page (GST/TDS)</div>
+            <div class="service-item" id="historyTab" onclick="switchTab('history')">📋 Booking Receipts</div>
         </div>
     </div>
 
     <div class="container">
-        <div class="card">
+        <div class="search-card">
             
             <!-- SEARCH HOTELS -->
             <div id="hotelSection">
-                <div class="form-group">
-                    <label>City / Location</label>
-                    <input type="text" id="hCity" value="Jamnagar">
+                <div class="form-grid">
+                    <div class="form-group"><label>City / Location</label><input type="text" id="hCity" value="Jamnagar"></div>
                 </div>
-                <button type="button" class="search-btn" onclick="searchHotels()">SEARCH HOTELS</button>
+                <button class="search-btn" onclick="searchHotels()">SEARCH HOTELS</button>
             </div>
 
-            <!-- PARTNER REGISTRATION -->
+            <!-- PARTNER PORTAL -->
             <div id="partnerSection" style="display:none;">
-                <h3 style="color:#008cff; margin-bottom:10px;">🏨 Hotel Registration (GST/TDS)</h3>
-                <div class="form-group"><label>Hotel Name</label><input type="text" id="pName" placeholder="Hotel Name"></div>
-                <div class="form-group"><label>City</label><input type="text" id="pCity" placeholder="City"></div>
-                <div class="form-group"><label>Price Per Night (₹)</label><input type="number" id="pPrice" placeholder="2500"></div>
-                <div class="form-group"><label>GSTIN</label><input type="text" id="pGstin" placeholder="24AAAAA0000A1Z5"></div>
-                <div class="form-group"><label>TDS (%)</label><input type="number" id="pTds" value="2"></div>
-                <div class="form-group"><label>WhatsApp No.</label><input type="text" id="pWhatsapp" placeholder="919876543210"></div>
-                <div class="form-group"><label>Email ID</label><input type="email" id="pEmail" placeholder="hotel@gmail.com"></div>
-                <button type="button" class="search-btn" style="background:#28a745;" onclick="registerHotelPartner()">SUBMIT HOTEL</button>
+                <div class="partner-box">
+                    <h3>🏨 Hotel Partner Registration & Tax Details</h3>
+                    <p style="font-size:12px; color:#475569; margin-bottom:15px;">Apni hotel list karein. Booking message directly WhatsApp aur Email par chala jayega.</p>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Hotel Name</label><input type="text" id="pName" placeholder="Royal Palace Hotel"></div>
+                        <div class="form-group"><label>City</label><input type="text" id="pCity" placeholder="Jamnagar"></div>
+                        <div class="form-group"><label>Price Per Night (₹)</label><input type="number" id="pPrice" placeholder="3500"></div>
+                        <div class="form-group"><label>GSTIN Number</label><input type="text" id="pGstin" placeholder="24ABCDE1234F1Z5"></div>
+                        <div class="form-group"><label>TDS Rate (%)</label><input type="number" id="pTds" value="2"></div>
+                        <div class="form-group"><label>WhatsApp Number</label><input type="text" id="pWhatsapp" placeholder="919876543210"></div>
+                        <div class="form-group"><label>Email ID</label><input type="email" id="pEmail" placeholder="hotel@gmail.com"></div>
+                    </div>
+                    <button class="search-btn" style="background:#28a745; box-shadow:none;" onclick="registerHotelPartner()">SAVE & PUBLISH HOTEL</button>
+                </div>
             </div>
 
-            <!-- BOOKING HISTORY -->
+            <!-- BOOKINGS -->
             <div id="historySection" style="display:none;">
-                <h3 style="margin-bottom:10px;">Booking Receipts</h3>
+                <h3 style="margin-bottom:12px;">Your Bookings</h3>
                 <div id="historyList">Loading...</div>
             </div>
 
-            <div id="results" style="margin-top:15px;"></div>
+            <div id="results" style="margin-top:20px;"></div>
         </div>
     </div>
 
     <script>
         function switchTab(type) {
-            console.log("Switching tab to: " + type);
             document.getElementById('hotelSection').style.display = 'none';
             document.getElementById('partnerSection').style.display = 'none';
             document.getElementById('historySection').style.display = 'none';
@@ -153,8 +161,7 @@ app.get('/', (req, res) => {
             let email = document.getElementById('pEmail').value;
 
             if(!name || !city || !displayPrice || !whatsapp || !email) {
-                alert("Kripya saari details bharein!");
-                return;
+                return alert("Kripya saari details bharein!");
             }
 
             let res = await fetch('/add-hotel-partner', {
@@ -165,7 +172,7 @@ app.get('/', (req, res) => {
 
             let data = await res.json();
             if(data.status === "SUCCESS") {
-                alert("Hotel add ho gaya hai!");
+                alert("Hotel successfully add ho gaya!");
                 document.getElementById('hCity').value = city;
                 switchTab('hotel');
             }
@@ -183,13 +190,13 @@ app.get('/', (req, res) => {
                     let gstAmount = Math.round(h.displayPrice * 0.18);
                     html += '<div class="hotel-card">' +
                         '<div>' +
-                            '<b>' + h.name + '</b>' +
-                            '<div style="color:#22c55e; font-size:11px;">★ ' + h.rating + ' | ' + h.city + '</div>' +
-                            '<div style="font-size:10px; color:#0369a1;">GSTIN: ' + (h.gstin || 'N/A') + '</div>' +
+                            '<b style="font-size:15px;">' + h.name + '</b>' +
+                            '<div style="color:#22c55e; font-size:11px; font-weight:700;">★ ' + h.rating + ' | ' + h.city + '</div>' +
+                            '<div style="font-size:10px; color:#0369a1; margin-top:3px;">GSTIN: ' + (h.gstin || 'N/A') + ' | GST (18%): ₹' + gstAmount + '</div>' +
                         '</div>' +
                         '<div>' +
-                            '<span style="font-size:16px; font-weight:800;">₹' + h.displayPrice + '</span> ' +
-                            '<button class="book-btn" onclick="payHotel(\'' + h.id + '\', ' + h.displayPrice + ', \'' + h.name + '\')">BOOK</button>' +
+                            '<span style="font-size:18px; font-weight:800; color:#0f172a; margin-right:10px;">₹' + h.displayPrice + '</span>' +
+                            '<button class="book-btn" onclick="payHotel(\'' + h.id + '\', ' + h.displayPrice + ', \'' + h.name + '\')">BOOK NOW</button>' +
                         '</div>' +
                     '</div>';
                 });
@@ -236,22 +243,19 @@ app.get('/', (req, res) => {
             let res = await fetch('/history');
             let data = await res.json();
             if(data.bookings.length === 0) {
-                document.getElementById('historyList').innerHTML = "<p style='color:#64748b;'>No bookings yet.</p>";
+                document.getElementById('historyList').innerHTML = "<p style='color:#64748b;'>No bookings made yet.</p>";
                 return;
             }
             let html = '';
             data.bookings.forEach(function(b) {
-                html += '<div style="padding:10px; border:1px solid #e2e8f0; margin-bottom:8px; border-radius:8px; background:#f8fafc;">' +
-                    '<b>' + b.pnr + '</b> | ' + b.title + ' | <b>₹' + b.fare + '</b>' +
+                html += '<div style="padding:12px; border:1px solid #e2e8f0; margin-bottom:8px; border-radius:10px; background:#f8fafc;">' +
+                    '<b>' + b.pnr + '</b> | ' + b.title + ' | <b>Total: ₹' + b.fare + '</b>' +
                 '</div>';
             });
             document.getElementById('historyList').innerHTML = html;
         }
 
-        // Auto load on start
-        window.onload = function() {
-            searchHotels();
-        };
+        searchHotels();
     </script>
 </body>
 </html>
@@ -276,7 +280,7 @@ app.post('/add-hotel-partner', (req, res) => {
         tdsPercent: Number(tdsPercent) || 2,
         whatsapp: whatsapp || "919876543210",
         email: email || "partner@techtravel.com",
-        rating: rating || "4 Star"
+        rating: rating || "5 Star"
     };
     dynamicHotels.unshift(newHotel);
     res.json({ status: "SUCCESS" });
