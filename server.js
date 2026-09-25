@@ -151,7 +151,6 @@ app.get('/', (req, res) => {
                 }
             }
 
-            // Bind Navigation Clicks
             hotelTab.addEventListener('click', () => switchTab('hotel'));
             partnerTab.addEventListener('click', () => switchTab('partner'));
             historyTab.addEventListener('click', () => switchTab('history'));
@@ -213,7 +212,6 @@ app.get('/', (req, res) => {
                 }
                 document.getElementById('results').innerHTML = html;
 
-                // Event listener for dynamic Book Now buttons
                 document.querySelectorAll('.book-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         payHotel(this.dataset.id, this.dataset.price, this.dataset.name);
@@ -236,6 +234,17 @@ app.get('/', (req, res) => {
                     "name": "Tech Travel",
                     "description": "Hotel Booking - " + title,
                     "order_id": orderData.id,
+                    "config": {
+                        "display": {
+                            "blocks": {
+                                "utib": {
+                                    "name": "Pay via UPI / Google Pay",
+                                    "instruments": [{ "method": "upi" }]
+                                }
+                            },
+                            "sequence": ["block.utib"]
+                        }
+                    },
                     "handler": async function (response){
                         let verifyRes = await fetch('/verify-booking', {
                             method: 'POST',
@@ -272,7 +281,6 @@ app.get('/', (req, res) => {
                 document.getElementById('historyList').innerHTML = html;
             }
 
-            // Initial load
             searchHotels();
         });
     </script>
@@ -319,7 +327,6 @@ app.post('/verify-booking', (req, res) => {
     const { hotelId, amount, type, title } = req.body;
     const pnr = "TT" + Math.floor(100000 + Math.random() * 900000);
     const hotel = dynamicHotels.find(h => h.id === hotelId) || dynamicHotels[0];
-    const gst = Math.round(amount * 0.18);
 
     const waMessage = encodeURIComponent(`*NEW BOOKING CONFIRMED!*\nPNR: ${pnr}\nHotel: ${title}\nAmount: ₹${amount}\nGSTIN: ${hotel.gstin}`);
     const waUrl = `https://api.whatsapp.com/send?phone=${hotel.whatsapp}&text=${waMessage}`;
