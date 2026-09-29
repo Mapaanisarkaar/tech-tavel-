@@ -3,6 +3,9 @@ const app = express();
 
 app.use(express.json());
 
+// Set your WhatsApp Number here (Country code + 10 digit number)
+const ADMIN_WHATSAPP = "919876543210"; 
+
 let dynamicHotels = [
     { 
         id: "H101",
@@ -24,7 +27,6 @@ let dynamicHotels = [
     }
 ];
 
-// Pure HTML Direct Route
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -64,8 +66,9 @@ app.get('/', (req, res) => {
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: white; width: 100%; max-width: 400px; border-radius: 20px; padding: 24px; text-align: center; }
-        .qr-box { margin: 16px 0; padding: 12px; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1; }
-        .btn-close { background: #f1f5f9; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; margin-top: 12px; cursor: pointer; }
+        .qr-box { margin: 12px 0; padding: 12px; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1; }
+        .btn-wa { width: 100%; background: #25d366; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 14px; margin-top: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-close { background: #f1f5f9; color: #64748b; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; margin-top: 8px; cursor: pointer; width: 100%; }
     </style>
 </head>
 <body>
@@ -91,19 +94,27 @@ app.get('/', (req, res) => {
 
     <div class="modal" id="payModal">
         <div class="modal-content">
-            <h3 id="mTitle" style="font-size:18px;">Complete Payment</h3>
+            <h3 id="mTitle" style="font-size:18px;">Complete Booking</h3>
             <p style="font-size:13px; color:#64748b; margin-top:4px;">Scan & Pay via any UPI App</p>
             <div class="qr-box">
-                <img id="qrImg" src="" alt="UPI QR" style="width:180px; height:180px;">
-                <div style="font-weight:800; font-size:18px; margin-top:8px;" id="mAmount"></div>
+                <img id="qrImg" src="" alt="UPI QR" style="width:160px; height:160px;">
+                <div style="font-weight:800; font-size:18px; margin-top:6px;" id="mAmount"></div>
             </div>
-            <p style="font-size:11px; color:#94a3b8;">After payment, receipt will be sent to your WhatsApp</p>
-            <button class="btn-close" onclick="closeModal()">Close Window</button>
+            
+            <div class="input-group" style="text-align: left; margin-top: 10px;">
+                <label>Guest / Agent Name</label>
+                <input type="text" id="guestName" placeholder="Enter Name">
+            </div>
+
+            <button class="btn-wa" onclick="sendWhatsAppAlert()">Send Booking Slip via WhatsApp</button>
+            <button class="btn-close" onclick="closeModal()">Cancel</button>
         </div>
     </div>
 
     <script>
         const cityInput = document.getElementById('hCity');
+        let currentHotel = "";
+        let currentPrice = 0;
 
         async function searchHotels() {
             let city = cityInput.value;
@@ -132,11 +143,26 @@ app.get('/', (req, res) => {
         }
 
         function openPayment(title, amount) {
+            currentHotel = title;
+            currentPrice = amount;
             document.getElementById('mTitle').innerText = title;
             document.getElementById('mAmount').innerText = '₹' + amount;
             let upiUrl = 'upi://pay?pa=techtravel@upi&pn=TechTravel&am=' + amount + '&cu=INR';
             document.getElementById('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(upiUrl);
             document.getElementById('payModal').style.display = 'flex';
+        }
+
+        function sendWhatsAppAlert() {
+            let guest = document.getElementById('guestName').value.trim() || 'Valued Guest';
+            let message = "NEW BOOKING REQUEST%0A" +
+                          "--------------------------%0A" +
+                          "Hotel: " + encodeURIComponent(currentHotel) + "%0A" +
+                          "Amount: ₹" + currentPrice + "%0A" +
+                          "Guest/Agent: " + encodeURIComponent(guest) + "%0A" +
+                          "Status: Payment Completed / Pending Verification%0A" +
+                          "--------------------------";
+            let waUrl = "https://wa.me/${ADMIN_WHATSAPP}?text=" + message;
+            window.open(waUrl, '_blank');
         }
 
         function closeModal() {
