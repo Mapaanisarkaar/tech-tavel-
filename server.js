@@ -3,8 +3,8 @@ const app = express();
 
 app.use(express.json());
 
-// Set your WhatsApp Number here (Country code + 10 digit number)
-const ADMIN_WHATSAPP = "919876543210"; 
+// Set your WhatsApp Number here
+const ADMIN_WHATSAPP = "916353890711"; 
 
 let dynamicHotels = [
     { 
