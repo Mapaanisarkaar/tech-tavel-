@@ -3,8 +3,8 @@ const app = express();
 
 app.use(express.json());
 
-// Set your WhatsApp Number here
 const ADMIN_WHATSAPP = "916353890711"; 
+const ADMIN_PIN = "1234"; // Admin panel access PIN
 
 let dynamicHotels = [
     { 
@@ -27,6 +27,7 @@ let dynamicHotels = [
     }
 ];
 
+// Main User Frontend Route
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -40,7 +41,7 @@ app.get('/', (req, res) => {
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background: #f8fafc; color: #0f172a; padding-bottom: 70px; }
+        body { background: #f8fafc; color: #0f172a; padding-bottom: 30px; }
         
         .header { background: #ffffff; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 22px; font-weight: 800; color: #0f172a; }
@@ -67,8 +68,11 @@ app.get('/', (req, res) => {
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: white; width: 100%; max-width: 400px; border-radius: 20px; padding: 24px; text-align: center; }
         .qr-box { margin: 12px 0; padding: 12px; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1; }
-        .btn-wa { width: 100%; background: #25d366; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 14px; margin-top: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-wa { width: 100%; background: #25d366; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 14px; margin-top: 10px; cursor: pointer; }
         .btn-close { background: #f1f5f9; color: #64748b; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; margin-top: 8px; cursor: pointer; width: 100%; }
+        
+        .footer-admin { text-align: center; padding: 20px 0 10px; }
+        .footer-admin a { color: #94a3b8; font-size: 11px; text-decoration: none; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -109,6 +113,11 @@ app.get('/', (req, res) => {
             <button class="btn-wa" onclick="sendWhatsAppAlert()">Send Booking Slip via WhatsApp</button>
             <button class="btn-close" onclick="closeModal()">Cancel</button>
         </div>
+    </div>
+
+    <!-- Hidden Admin Link at Page Bottom -->
+    <div class="footer-admin">
+        <a href="/admin">⚙️ Partner Admin Access</a>
     </div>
 
     <script>
@@ -175,6 +184,157 @@ app.get('/', (req, res) => {
 </body>
 </html>
   `);
+});
+
+// Dedicated Admin Panel Route
+app.get('/admin', (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - TechTravel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; }
+        body { background: #0f172a; color: white; padding: 20px; }
+        .card { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid #334155; }
+        h2 { font-size: 20px; margin-bottom: 16px; color: #38bdf8; }
+        label { font-size: 12px; color: #94a3b8; display: block; margin-bottom: 4px; font-weight: 700; }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; margin-bottom: 12px; font-weight: 600; outline: none; }
+        .btn { width: 100%; background: #2563eb; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .hotel-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #334155; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .login-box { max-width: 350px; margin: 50px auto; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div id="authBox" class="login-box card">
+        <h2>🔒 Admin Login</h2>
+        <label>Enter Secret PIN</label>
+        <input type="password" id="pinInput" placeholder="Enter PIN (Default: 1234)">
+        <button class="btn" onclick="checkPin()">Unlock Dashboard</button>
+    </div>
+
+    <div id="adminPanel" style="display:none; max-width: 600px; margin: 0 auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h1 style="font-size:22px;">Hotel Management</h1>
+            <a href="/" style="color:#38bdf8; text-decoration:none; font-size:13px; font-weight:700;">← Back to Site</a>
+        </div>
+
+        <div class="card">
+            <h2>➕ Add New Hotel</h2>
+            <label>Hotel Name</label>
+            <input type="text" id="hName" placeholder="e.g. Radisson Blu">
+            
+            <label>City Name</label>
+            <input type="text" id="hCity" placeholder="e.g. Jamnagar">
+
+            <label>Price per Night (₹)</label>
+            <input type="number" id="hPrice" placeholder="e.g. 4500">
+
+            <label>Rating</label>
+            <input type="text" id="hRating" value="4.5 ★">
+
+            <button class="btn" onclick="addHotel()" style="background:#16a34a;">Add Hotel Live</button>
+        </div>
+
+        <div class="card">
+            <h2>🏨 Existing Hotels</h2>
+            <div id="manageList"></div>
+        </div>
+    </div>
+
+    <script>
+        function checkPin() {
+            let pin = document.getElementById('pinInput').value;
+            if(pin === "${ADMIN_PIN}") {
+                document.getElementById('authBox').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadAdminHotels();
+            } else {
+                alert('Wrong PIN!');
+            }
+        }
+
+        async function loadAdminHotels() {
+            let res = await fetch('/admin/hotels');
+            let data = await res.json();
+            let html = '';
+            data.hotels.forEach(h => {
+                html += \`
+                <div class="hotel-item">
+                    <div>
+                        <strong style="font-size:15px;">\${h.name}</strong><br>
+                        <span style="font-size:12px; color:#94a3b8;">\${h.city} • ₹\${h.displayPrice}</span>
+                    </div>
+                    <button class="btn-del" onclick="deleteHotel('\${h.id}')">Delete</button>
+                </div>\`;
+            });
+            document.getElementById('manageList').innerHTML = html;
+        }
+
+        async function addHotel() {
+            let name = document.getElementById('hName').value;
+            let city = document.getElementById('hCity').value;
+            let price = document.getElementById('hPrice').value;
+            let rating = document.getElementById('hRating').value;
+
+            if(!name || !city || !price) return alert('Please fill all details');
+
+            await fetch('/admin/add-hotel', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name, city, price, rating })
+            });
+
+            document.getElementById('hName').value = '';
+            document.getElementById('hPrice').value = '';
+            loadAdminHotels();
+            alert('Hotel added successfully!');
+        }
+
+        async function deleteHotel(id) {
+            if(!confirm('Are you sure?')) return;
+            await fetch('/admin/delete-hotel', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id })
+            });
+            loadAdminHotels();
+        }
+    </script>
+</body>
+</html>
+  `);
+});
+
+// Admin API Endpoints
+app.get('/admin/hotels', (req, res) => res.json({ hotels: dynamicHotels }));
+
+app.post('/admin/add-hotel', (req, res) => {
+    const { name, city, price, rating } = req.body;
+    const newHotel = {
+        id: "H" + Date.now(),
+        name,
+        city,
+        rating: rating || "4.5 ★",
+        displayPrice: Number(price),
+        address: city,
+        features: ["Free WiFi", "AC", "24/7 Service"]
+    };
+    dynamicHotels.push(newHotel);
+    res.json({ success: true });
+});
+
+app.post('/admin/delete-hotel', (req, res) => {
+    const { id } = req.body;
+    dynamicHotels = dynamicHotels.filter(h => h.id !== id);
+    res.json({ success: true });
 });
 
 app.post('/search-hotels', (req, res) => {
