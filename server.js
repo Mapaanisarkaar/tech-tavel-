@@ -73,6 +73,7 @@ app.get('/', (req, res) => {
         
         .footer-admin { text-align: center; padding: 20px 0 10px; }
         .footer-admin a { color: #94a3b8; font-size: 11px; text-decoration: none; font-weight: 600; }
+        .credit-text { color: #64748b; font-size: 12px; font-weight: 700; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
@@ -117,6 +118,7 @@ app.get('/', (req, res) => {
 
     <div class="footer-admin">
         <a href="/admin">⚙️ NexTrip Admin Access</a>
+        <div class="credit-text">Powered by NANDHABHA</div>
     </div>
 
     <script>
