@@ -4,7 +4,7 @@ const app = express();
 app.use(express.json());
 
 const ADMIN_WHATSAPP = "916353890711"; 
-const ADMIN_PIN = "1234"; // Admin panel access PIN
+const ADMIN_PIN = "1234";
 
 let dynamicHotels = [
     { 
@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TechTravel - Premium B2B Stays</title>
+    <title>NexTrip Stays - Premium B2B Stays</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -78,7 +78,7 @@ app.get('/', (req, res) => {
 <body>
 
     <div class="header">
-        <div class="logo">Tech<span>Travel</span></div>
+        <div class="logo">NexTrip <span>Stays</span></div>
         <div style="font-size:12px; font-weight:700; color:#2563eb; background:#eff6ff; padding:4px 10px; border-radius:20px;">B2B Portal</div>
     </div>
 
@@ -115,9 +115,8 @@ app.get('/', (req, res) => {
         </div>
     </div>
 
-    <!-- Hidden Admin Link at Page Bottom -->
     <div class="footer-admin">
-        <a href="/admin">⚙️ Partner Admin Access</a>
+        <a href="/admin">⚙️ NexTrip Admin Access</a>
     </div>
 
     <script>
@@ -156,14 +155,14 @@ app.get('/', (req, res) => {
             currentPrice = amount;
             document.getElementById('mTitle').innerText = title;
             document.getElementById('mAmount').innerText = '₹' + amount;
-            let upiUrl = 'upi://pay?pa=techtravel@upi&pn=TechTravel&am=' + amount + '&cu=INR';
+            let upiUrl = 'upi://pay?pa=nextrip@upi&pn=NexTripStays&am=' + amount + '&cu=INR';
             document.getElementById('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(upiUrl);
             document.getElementById('payModal').style.display = 'flex';
         }
 
         function sendWhatsAppAlert() {
             let guest = document.getElementById('guestName').value.trim() || 'Valued Guest';
-            let message = "NEW BOOKING REQUEST%0A" +
+            let message = "NEW BOOKING REQUEST (NexTrip Stays)%0A" +
                           "--------------------------%0A" +
                           "Hotel: " + encodeURIComponent(currentHotel) + "%0A" +
                           "Amount: ₹" + currentPrice + "%0A" +
@@ -196,7 +195,7 @@ app.get('/admin', (req, res) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - TechTravel</title>
+    <title>NexTrip Stays - Admin Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; }
@@ -214,7 +213,7 @@ app.get('/admin', (req, res) => {
 <body>
 
     <div id="authBox" class="login-box card">
-        <h2>🔒 Admin Login</h2>
+        <h2>🔒 NexTrip Stays Admin Login</h2>
         <label>Enter Secret PIN</label>
         <input type="password" id="pinInput" placeholder="Enter PIN (Default: 1234)">
         <button class="btn" onclick="checkPin()">Unlock Dashboard</button>
@@ -222,7 +221,7 @@ app.get('/admin', (req, res) => {
 
     <div id="adminPanel" style="display:none; max-width: 600px; margin: 0 auto;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h1 style="font-size:22px;">Hotel Management</h1>
+            <h1 style="font-size:22px;">NexTrip Stays Management</h1>
             <a href="/" style="color:#38bdf8; text-decoration:none; font-size:13px; font-weight:700;">← Back to Site</a>
         </div>
 
@@ -313,7 +312,6 @@ app.get('/admin', (req, res) => {
   `);
 });
 
-// Admin API Endpoints
 app.get('/admin/hotels', (req, res) => res.json({ hotels: dynamicHotels }));
 
 app.post('/admin/add-hotel', (req, res) => {
