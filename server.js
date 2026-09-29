@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 
 app.use(express.json());
-app.use(express.static(__dirname));
 
 let dynamicHotels = [
     { 
@@ -25,7 +24,10 @@ let dynamicHotels = [
     }
 ];
 
+// Pure HTML Direct Route
 app.get('/', (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.send(`
 <!DOCTYPE html>
 <html lang="en">
@@ -74,7 +76,7 @@ app.get('/', (req, res) => {
     </div>
 
     <div class="hero-banner">
-        <img src="/1000251878.jpg" class="hero-img" alt="Banner" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800'">
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800" class="hero-img" alt="Banner">
     </div>
 
     <div class="search-card">
@@ -114,16 +116,16 @@ app.get('/', (req, res) => {
             } else {
                 data.hotels.forEach(function(h) {
                     let featuresHtml = (h.features || []).map(f => '<span class="badge">' + f + '</span>').join('');
-                    html += `
+                    html += \`
                     <div class="hotel-card">
-                        <div class="hotel-title">${h.name}</div>
-                        <div class="hotel-sub">${h.rating} •${h.address || h.city}</div>
-                        <div>${featuresHtml}</div>
+                        <div class="hotel-title">\${h.name}</div>
+                        <div class="hotel-sub">\${h.rating} • \${h.address || h.city}</div>
+                        <div>\${featuresHtml}</div>
                         <div class="card-bottom">
-                            <div class="price">₹${h.displayPrice} <span style="font-size:11px; color:#64748b; font-weight:500;">/night</span></div>
-                            <button class="btn-book" onclick="openPayment('${h.name}',${h.displayPrice})">Book Now</button>
+                            <div class="price">₹\${h.displayPrice} <span style="font-size:11px; color:#64748b; font-weight:500;">/night</span></div>
+                            <button class="btn-book" onclick="openPayment('\${h.name}', \${h.displayPrice})">Book Now</button>
                         </div>
-                    </div>`;
+                    </div>\`;
                 });
             }
             document.getElementById('hotelList').innerHTML = html;
